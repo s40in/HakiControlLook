@@ -3,7 +3,7 @@
  */
 
 
-#include "HakiloControlLook.h"
+#include "HakiCDEControlLook.h"
 
 #include <algorithm>
 
@@ -29,41 +29,41 @@ static const float kHoverTintFactor = 0.85;
 static const float kButtonPopUpIndicatorWidth = 11;
 
 
-HakiloControlLook::HakiloControlLook()
+HakiCDEControlLook::HakiCDEControlLook()
 	:
 	fCachedOutline(false)
 {
 }
 
 
-HakiloControlLook::~HakiloControlLook()
+HakiCDEControlLook::~HakiCDEControlLook()
 {
 }
 
 
 BAlignment
-HakiloControlLook::DefaultLabelAlignment() const
+HakiCDEControlLook::DefaultLabelAlignment() const
 {
 	return BAlignment(B_ALIGN_LEFT, B_ALIGN_VERTICAL_CENTER);
 }
 
 
 float
-HakiloControlLook::DefaultLabelSpacing() const
+HakiCDEControlLook::DefaultLabelSpacing() const
 {
 	return ceilf(be_plain_font->Size() / 2.0);
 }
 
 
 float
-HakiloControlLook::DefaultItemSpacing() const
+HakiCDEControlLook::DefaultItemSpacing() const
 {
 	return ceilf(be_plain_font->Size() * 0.85);
 }
 
 
 uint32
-HakiloControlLook::Flags(BControl* control) const
+HakiCDEControlLook::Flags(BControl* control) const
 {
 	uint32 flags = B_IS_CONTROL;
 
@@ -99,21 +99,17 @@ HakiloControlLook::Flags(BControl* control) const
 
 
 void
-HakiloControlLook::DrawButtonFrame(BView* view, BRect& rect, const BRect& updateRect,
+HakiCDEControlLook::DrawButtonFrame(BView* view, BRect& rect, const BRect& updateRect,
 	const rgb_color& base, const rgb_color& background, uint32 flags,
 	uint32 borders)
 {
-	//	_DrawButtonFrame(view, rect, updateRect, 0.0f, 0.0f, 0.0f, 0.0f, base,
-	//	background, 1.0, 1.0, flags, borders);
-		
-		_DrawDanoButtonFrame(view, rect, updateRect, 0.0f, 0.0f, 0.0f, 0.0f, base,
+	_DrawButtonFrame(view, rect, updateRect, 0.0f, 0.0f, 0.0f, 0.0f, base,
 		background, 1.0, 1.0, flags, borders);
-
 }
 
 
 void
-HakiloControlLook::DrawButtonFrame(BView* view, BRect& rect, const BRect& updateRect,
+HakiCDEControlLook::DrawButtonFrame(BView* view, BRect& rect, const BRect& updateRect,
 	float radius, const rgb_color& base, const rgb_color& background, uint32 flags,
 	uint32 borders)
 {
@@ -123,7 +119,7 @@ HakiloControlLook::DrawButtonFrame(BView* view, BRect& rect, const BRect& update
 
 
 void
-HakiloControlLook::DrawButtonFrame(BView* view, BRect& rect,
+HakiCDEControlLook::DrawButtonFrame(BView* view, BRect& rect,
 	const BRect& updateRect, float leftTopRadius, float rightTopRadius,
 	float leftBottomRadius, float rightBottomRadius, const rgb_color& base,
 	const rgb_color& background, uint32 flags,
@@ -136,19 +132,17 @@ HakiloControlLook::DrawButtonFrame(BView* view, BRect& rect,
 
 
 void
-HakiloControlLook::DrawButtonBackground(BView* view, BRect& rect,
+HakiCDEControlLook::DrawButtonBackground(BView* view, BRect& rect,
 	const BRect& updateRect, const rgb_color& base, uint32 flags,
 	uint32 borders, orientation orientation)
 {
-
-	_DrawHakiButtonBackground(view, rect, updateRect, 0.0f, 0.0f, 0.0f, 0.0f,
+	_DrawButtonBackground(view, rect, updateRect, 0.0f, 0.0f, 0.0f, 0.0f,
 		base, false, flags, borders, orientation);
-			
 }
 
 
 void
-HakiloControlLook::DrawButtonBackground(BView* view, BRect& rect,
+HakiCDEControlLook::DrawButtonBackground(BView* view, BRect& rect,
 	const BRect& updateRect, float radius, const rgb_color& base, uint32 flags,
 	uint32 borders, orientation orientation)
 {
@@ -158,7 +152,7 @@ HakiloControlLook::DrawButtonBackground(BView* view, BRect& rect,
 
 
 void
-HakiloControlLook::DrawButtonBackground(BView* view, BRect& rect,
+HakiCDEControlLook::DrawButtonBackground(BView* view, BRect& rect,
 	const BRect& updateRect, float leftTopRadius, float rightTopRadius,
 	float leftBottomRadius, float rightBottomRadius, const rgb_color& base,
 	uint32 flags, uint32 borders, orientation orientation)
@@ -170,54 +164,41 @@ HakiloControlLook::DrawButtonBackground(BView* view, BRect& rect,
 
 
 void
-HakiloControlLook::DrawMenuBarBackground(BView* view, BRect& rect,
+HakiCDEControlLook::DrawMenuBarBackground(BView* view, BRect& rect,
 	const BRect& updateRect, const rgb_color& base, uint32 flags,
 	uint32 borders)
 {
 	if (!rect.IsValid() || !rect.Intersects(updateRect))
 		return;
 
-	// the surface edges
+	rgb_color rgbMenuMidColor = { 73, 146, 167, 255 };
+	rgb_color rgbMenuHighColor = { 173, 206, 215, 255 };
+	rgb_color rgbMenuLowColor = { 36, 73, 83, 255 };
 
-	// colors
-	float topTint;
-	float bottomTint;
 
 	if ((flags & B_ACTIVATED) != 0) {
-		rgb_color bevelColor1 = tint_color(base, 1.40);
-		rgb_color bevelColor2 = tint_color(base, 1.25);
-
-		topTint = 1.25;
-		bottomTint = 1.20;
 
 		_DrawFrame(view, rect,
-			bevelColor1, bevelColor1,
-			bevelColor2, bevelColor2,
+			rgbMenuLowColor, rgbMenuLowColor,
+			rgbMenuHighColor, rgbMenuHighColor,
 			borders & B_TOP_BORDER);
 	} else {
-		rgb_color cornerColor = tint_color(base, 0.9);
-		rgb_color bevelColorTop = tint_color(base, 0.5);
-		rgb_color bevelColorLeft = tint_color(base, 0.7);
-		rgb_color bevelColorRightBottom = tint_color(base, 1.08);
-
-		topTint = 0.69;
-		bottomTint = 1.03;
-
 		_DrawFrame(view, rect,
-			bevelColorLeft, bevelColorTop,
-			bevelColorRightBottom, bevelColorRightBottom,
-			cornerColor, cornerColor,
+			rgbMenuHighColor,rgbMenuHighColor,
+			rgbMenuLowColor, rgbMenuLowColor,
 			borders);
 	}
 
 	// draw surface top
 	//_FillGradient(view, rect, base, topTint, bottomTint);
-	_FillNoGradient(view, rect, base);
+	//_FillNoGradient(view, rect, base);
+	view->SetHighColor(rgbMenuMidColor);
+	view->FillRect(rect);
 }
 
 
 void
-HakiloControlLook::DrawMenuFieldFrame(BView* view, BRect& rect,
+HakiCDEControlLook::DrawMenuFieldFrame(BView* view, BRect& rect,
 	const BRect& updateRect, const rgb_color& base,
 	const rgb_color& background, uint32 flags, uint32 borders)
 {
@@ -227,7 +208,7 @@ HakiloControlLook::DrawMenuFieldFrame(BView* view, BRect& rect,
 
 
 void
-HakiloControlLook::DrawMenuFieldFrame(BView* view, BRect& rect,
+HakiCDEControlLook::DrawMenuFieldFrame(BView* view, BRect& rect,
 	const BRect& updateRect, float radius, const rgb_color& base,
 	const rgb_color& background, uint32 flags, uint32 borders)
 {
@@ -237,7 +218,7 @@ HakiloControlLook::DrawMenuFieldFrame(BView* view, BRect& rect,
 
 
 void
-HakiloControlLook::DrawMenuFieldFrame(BView* view, BRect& rect,
+HakiCDEControlLook::DrawMenuFieldFrame(BView* view, BRect& rect,
 	const BRect& updateRect, float leftTopRadius,
 	float rightTopRadius, float leftBottomRadius,
 	float rightBottomRadius, const rgb_color& base,
@@ -250,7 +231,7 @@ HakiloControlLook::DrawMenuFieldFrame(BView* view, BRect& rect,
 
 
 void
-HakiloControlLook::DrawMenuFieldBackground(BView* view, BRect& rect,
+HakiCDEControlLook::DrawMenuFieldBackground(BView* view, BRect& rect,
 	const BRect& updateRect, const rgb_color& base, bool popupIndicator,
 	uint32 flags)
 {
@@ -260,7 +241,7 @@ HakiloControlLook::DrawMenuFieldBackground(BView* view, BRect& rect,
 
 
 void
-HakiloControlLook::DrawMenuFieldBackground(BView* view, BRect& rect,
+HakiCDEControlLook::DrawMenuFieldBackground(BView* view, BRect& rect,
 	const BRect& updateRect, const rgb_color& base, uint32 flags,
 	uint32 borders)
 {
@@ -270,7 +251,7 @@ HakiloControlLook::DrawMenuFieldBackground(BView* view, BRect& rect,
 
 
 void
-HakiloControlLook::DrawMenuFieldBackground(BView* view, BRect& rect,
+HakiCDEControlLook::DrawMenuFieldBackground(BView* view, BRect& rect,
 	const BRect& updateRect, float radius, const rgb_color& base,
 	bool popupIndicator, uint32 flags)
 {
@@ -280,7 +261,7 @@ HakiloControlLook::DrawMenuFieldBackground(BView* view, BRect& rect,
 
 
 void
-HakiloControlLook::DrawMenuFieldBackground(BView* view, BRect& rect,
+HakiCDEControlLook::DrawMenuFieldBackground(BView* view, BRect& rect,
 	const BRect& updateRect, float leftTopRadius, float rightTopRadius,
 	float leftBottomRadius, float rightBottomRadius, const rgb_color& base,
 	bool popupIndicator, uint32 flags)
@@ -292,7 +273,7 @@ HakiloControlLook::DrawMenuFieldBackground(BView* view, BRect& rect,
 
 
 void
-HakiloControlLook::DrawMenuBackground(BView* view, BRect& rect,
+HakiCDEControlLook::DrawMenuBackground(BView* view, BRect& rect,
 	const BRect& updateRect, const rgb_color& base, uint32 flags,
 	uint32 borders)
 {
@@ -327,7 +308,7 @@ HakiloControlLook::DrawMenuBackground(BView* view, BRect& rect,
 
 
 void
-HakiloControlLook::DrawMenuItemBackground(BView* view, BRect& rect,
+HakiCDEControlLook::DrawMenuItemBackground(BView* view, BRect& rect,
 	const BRect& updateRect, const rgb_color& base, uint32 flags,
 	uint32 borders)
 {
@@ -368,7 +349,7 @@ HakiloControlLook::DrawMenuItemBackground(BView* view, BRect& rect,
 
 
 void
-HakiloControlLook::DrawStatusBar(BView* view, BRect& rect, const BRect& updateRect,
+HakiCDEControlLook::DrawStatusBar(BView* view, BRect& rect, const BRect& updateRect,
 	const rgb_color& base, const rgb_color& barColor, float progressPosition)
 {
 	if (!rect.Intersects(updateRect))
@@ -423,116 +404,12 @@ HakiloControlLook::DrawStatusBar(BView* view, BRect& rect, const BRect& updateRe
 
 
 void
-HakiloControlLook::DrawCheckBox(BView* view, BRect& rect, const BRect& updateRect,
+HakiCDEControlLook::DrawCheckBox(BView* view, BRect& rect, const BRect& updateRect,
 	const rgb_color& base, uint32 flags)
 {
 	if (!rect.Intersects(updateRect))
 		return;
-		
-	
-	rgb_color blackColor= {0,0,0,255};	
-	rgb_color whiteColor= {255, 255, 255, 255};	
-	rgb_color markColor= {103, 103, 200, 255};
-	rgb_color ShadowHighColor= {184, 184, 184, 255};
-	rgb_color ShadowLowColor= {136, 136, 136, 255};	
-	rgb_color borderColor;
-	rgb_color backgroundColor;
-	rgb_color navigationColor = ui_color(B_KEYBOARD_NAVIGATION_COLOR);
-	
-	if ((flags & B_DISABLED) != 0) {
-		backgroundColor = base;
-		borderColor = blackColor;
-	} else if ((flags & B_CLICKED) != 0) {
-		backgroundColor = whiteColor;
-		borderColor = blackColor;
-	} else {
-		backgroundColor = whiteColor;
-		borderColor = blackColor;
-	}
-	
-	if ((flags & B_FOCUSED) != 0) {
-		borderColor = navigationColor;
-	}
-		
-	BRect sqRect(rect);
-	float sqR = (rect.right-rect.left)*0.59; //размер круга
-	
-	sqRect.left += 1;
-	sqRect.right = sqRect.left + sqR;
-	sqRect.top = rect.top + 3;
-	sqRect.bottom = sqRect.top + sqR;
-	
-	BRect sqShadowLowRect(sqRect);
-	sqShadowLowRect.left += 1;
-	sqShadowLowRect.top += 1;
-	sqShadowLowRect.right += 1;
-	sqShadowLowRect.bottom += 1;
-	
-	BRect sqShadowHighRect(sqRect);
-	sqShadowHighRect.left += 2;
-	sqShadowHighRect.top += 2;
-	sqShadowHighRect.right += 2;
-	sqShadowHighRect.bottom += 2;
-	
-	
-	BRect markRect(sqRect);
-	markRect.left += 3;
-	markRect.top -= 3 ;
-	markRect.bottom -= 3;
-	markRect.right += 3;
-	
-	BRect markShadowLowRect(markRect);
-	markShadowLowRect.left += 1;
-	markShadowLowRect.top += 1;
-	markShadowLowRect.right += 1;
-	markShadowLowRect.bottom += 1;
-	
-	BRect markShadowHighRect(markRect);
-	markShadowHighRect.left += 2;
-	markShadowHighRect.top += 2;
-	markShadowHighRect.right += 2;
-	markShadowHighRect.bottom += 2;	
-	
-		
-		// shadow
-  if (_RadioButtonAndCheckBoxMarkColor(base, markColor, flags)) {	
-	// mark shadow
-	view->SetHighColor(ShadowHighColor);
-	view->FillRoundRect(markShadowHighRect, 1.0, 1.0);
-	view->SetHighColor(ShadowLowColor);
-	view->FillRoundRect(markShadowLowRect, 1.0, 1.0);
 
-	// end mark shadow
-
-  }
-  else {
-  	// shadow box
-	view->SetHighColor(ShadowHighColor);
-	view->FillRoundRect(sqShadowHighRect, 1.0, 1.0);
-	view->SetHighColor(ShadowLowColor);
-	view->FillRoundRect(sqShadowLowRect, 1.0, 1.0);
-	// end shadow box
-  	
-  }
-		
-	view->SetHighColor(backgroundColor);
-	view->FillRoundRect(sqRect, 1.0, 1.0);
-	
-	view->SetHighColor(borderColor);
-	view->StrokeRoundRect(sqRect, 1.0, 1.0);
-	
-  if (_RadioButtonAndCheckBoxMarkColor(base, markColor, flags)) {	
-	// mark
-	view->SetHighColor(markColor);
-	view->FillRoundRect(markRect, 1.0, 1.0);
-	
-	view->SetHighColor(borderColor);
-	view->StrokeRoundRect(markRect, 1.0, 1.0);	
-	// end mark
- }
-	
-
-	/*
 	rgb_color dark1BorderColor;
 	rgb_color dark2BorderColor;
 	rgb_color navigationColor = ui_color(B_KEYBOARD_NAVIGATION_COLOR);
@@ -595,121 +472,16 @@ HakiloControlLook::DrawCheckBox(BView* view, BRect& rect, const BRect& updateRec
 		view->StrokeLine(rect.LeftTop(), rect.RightBottom());
 		view->StrokeLine(rect.LeftBottom(), rect.RightTop());
 	}
-	*/
 }
 
 
 void
-HakiloControlLook::DrawRadioButton(BView* view, BRect& rect, const BRect& updateRect,
+HakiCDEControlLook::DrawRadioButton(BView* view, BRect& rect, const BRect& updateRect,
 	const rgb_color& base, uint32 flags)
 {
 	if (!rect.Intersects(updateRect))
 		return;
-	rgb_color blackColor= {0,0,0,255};	
-	rgb_color whiteColor= {255, 255, 255, 255};	
-	rgb_color markColor= {103, 103, 200, 255};
-	rgb_color ShadowHighColor= {184, 184, 184, 255};
-	rgb_color ShadowLowColor= {136, 136, 136, 255};	
-	rgb_color borderColor;
-	rgb_color backgroundColor;
-	rgb_color navigationColor = ui_color(B_KEYBOARD_NAVIGATION_COLOR);
-	
-	if ((flags & B_DISABLED) != 0) {
-		backgroundColor = base;
-		borderColor = blackColor;
-	} else if ((flags & B_CLICKED) != 0) {
-		backgroundColor = whiteColor;
-		borderColor = blackColor;
-	} else {
-		backgroundColor = whiteColor;
-		borderColor = blackColor;
-	}
-	
-	if ((flags & B_FOCUSED) != 0) {
-		borderColor = navigationColor;
-	}
-	
-		
-	BRect circleRect(rect);
-	float circleR = (rect.right-rect.left)*0.64; //размер круга
-	
-	circleRect.left += 1;
-	circleRect.right = circleRect.left + circleR;
-	circleRect.top = rect.top + (rect.bottom - rect.top - circleR)/2;
-	circleRect.bottom = circleRect.top + circleR;
-	
-	BRect circleShadowLowRect(circleRect);
-	circleShadowLowRect.left += 1;
-	circleShadowLowRect.top += 1;
-	circleShadowLowRect.right += 1;
-	circleShadowLowRect.bottom += 1;
-	
-	BRect circleShadowHighRect(circleRect);
-	circleShadowHighRect.left += 2;
-	circleShadowHighRect.top += 2;
-	circleShadowHighRect.right += 2;
-	circleShadowHighRect.bottom += 2;
-	
-	BRect markRect(circleRect);
-	markRect.left += 3;
-	markRect.top += 4 ;
-	markRect.bottom -= 3;
-	markRect.right += 3;
-	
-	BRect markShadowLowRect(markRect);
-	markShadowLowRect.left += 1;
-	markShadowLowRect.top += 1;
-	markShadowLowRect.right += 1;
-	markShadowLowRect.bottom += 1;
-	
-	BRect markShadowHighRect(markRect);
-	markShadowHighRect.left += 2;
-	markShadowHighRect.top += 2;
-	markShadowHighRect.right += 2;
-	markShadowHighRect.bottom += 2;	
-	
-	
-	
 
-	// shadow
-  if (_RadioButtonAndCheckBoxMarkColor(base, markColor, flags)) {	
-	// mark shadow
-	view->SetHighColor(ShadowHighColor);
-	view->FillRoundRect(markShadowHighRect, 2.0, 2.0);
-	
-	view->SetHighColor(ShadowLowColor);
-	view->FillRoundRect(markShadowLowRect, 2.0, 2.0);
-	// end mark shadow
-
-  }
-  else {
-  	// shadow circle
-	view->SetHighColor(ShadowHighColor);
-	view->FillEllipse(circleShadowHighRect);
-	view->SetHighColor(ShadowLowColor);
-	view->FillEllipse(circleShadowLowRect);
-	// end shadow circle
-  	
-  }
-	
-	view->SetHighColor(backgroundColor);
-	view->FillEllipse(circleRect);
-	
-	view->SetHighColor(borderColor);
-	view->StrokeEllipse(circleRect);
-	
-  if (_RadioButtonAndCheckBoxMarkColor(base, markColor, flags)) {	
-		
-	// mark
-	view->SetHighColor(markColor);
-	view->FillRoundRect(markRect, 2.0, 2.0);
-	
-	view->SetHighColor(borderColor);
-	view->StrokeRoundRect(markRect, 2.0, 2.0);	
-	// end mark
- }
-
-	/*
 	rgb_color borderColor;
 	rgb_color bevelLight;
 	rgb_color bevelShadow;
@@ -771,12 +543,11 @@ HakiloControlLook::DrawRadioButton(BView* view, BRect& rect, const BRect& update
 		rect.InsetBy(inset, inset);
 		view->FillEllipse(rect);
 	}
-	*/
 }
 
 
 void
-HakiloControlLook::DrawScrollBarBackground(BView* view, BRect& rect1, BRect& rect2,
+HakiCDEControlLook::DrawScrollBarBackground(BView* view, BRect& rect1, BRect& rect2,
 	const BRect& updateRect, const rgb_color& base, uint32 flags,
 	orientation orientation)
 {
@@ -786,7 +557,7 @@ HakiloControlLook::DrawScrollBarBackground(BView* view, BRect& rect1, BRect& rec
 
 
 void
-HakiloControlLook::DrawScrollBarBackground(BView* view, BRect& rect,
+HakiCDEControlLook::DrawScrollBarBackground(BView* view, BRect& rect,
 	const BRect& updateRect, const rgb_color& base, uint32 flags,
 	orientation orientation)
 {
@@ -874,7 +645,7 @@ HakiloControlLook::DrawScrollBarBackground(BView* view, BRect& rect,
 
 
 void
-HakiloControlLook::DrawScrollViewFrame(BView* view, BRect& rect,
+HakiCDEControlLook::DrawScrollViewFrame(BView* view, BRect& rect,
 	const BRect& updateRect, BRect verticalScrollBarFrame,
 	BRect horizontalScrollBarFrame, const rgb_color& base,
 	border_style borderStyle, uint32 flags, uint32 _borders)
@@ -958,7 +729,7 @@ HakiloControlLook::DrawScrollViewFrame(BView* view, BRect& rect,
 
 
 void
-HakiloControlLook::DrawArrowShape(BView* view, BRect& rect, const BRect& updateRect,
+HakiCDEControlLook::DrawArrowShape(BView* view, BRect& rect, const BRect& updateRect,
 	const rgb_color& base, uint32 direction, uint32 flags, float tint)
 {
 	BPoint tri1, tri2, tri3;
@@ -1039,14 +810,14 @@ HakiloControlLook::DrawArrowShape(BView* view, BRect& rect, const BRect& updateR
 
 
 rgb_color
-HakiloControlLook::SliderBarColor(const rgb_color& base)
+HakiCDEControlLook::SliderBarColor(const rgb_color& base)
 {
 	return tint_color(ui_color(B_PANEL_BACKGROUND_COLOR), B_DARKEN_1_TINT);
 }
 
 
 void
-HakiloControlLook::DrawSliderBar(BView* view, BRect rect, const BRect& updateRect,
+HakiCDEControlLook::DrawSliderBar(BView* view, BRect rect, const BRect& updateRect,
 	const rgb_color& base, rgb_color leftFillColor, rgb_color rightFillColor,
 	float sliderScale, uint32 flags, orientation orientation)
 {
@@ -1103,7 +874,7 @@ HakiloControlLook::DrawSliderBar(BView* view, BRect rect, const BRect& updateRec
 
 
 void
-HakiloControlLook::DrawSliderBar(BView* view, BRect rect, const BRect& updateRect,
+HakiCDEControlLook::DrawSliderBar(BView* view, BRect rect, const BRect& updateRect,
 	const rgb_color& base, rgb_color fillColor, uint32 flags,
 	orientation orientation)
 {
@@ -1200,6 +971,7 @@ HakiloControlLook::DrawSliderBar(BView* view, BRect rect, const BRect& updateRec
 		frameShadowColor = tint_color(fillColor, frameShadowTint);
 	}
 
+	/*
 	if (orientation == B_HORIZONTAL) {
 		_DrawRoundBarCorner(view, leftCorner, updateRect, edgeLightColor,
 			edgeShadowColor, frameLightColor, frameShadowColor, fillLightColor,
@@ -1217,6 +989,7 @@ HakiloControlLook::DrawSliderBar(BView* view, BRect rect, const BRect& updateRec
 			edgeShadowColor, frameLightColor, frameShadowColor, fillLightColor,
 			fillShadowColor, 1.0, 0.0, -1.0, -1.0, orientation);
 	}
+	*/
 
 	view->ConstrainClippingRegion(NULL);
 
@@ -1252,7 +1025,7 @@ HakiloControlLook::DrawSliderBar(BView* view, BRect rect, const BRect& updateRec
 
 
 void
-HakiloControlLook::DrawSliderThumb(BView* view, BRect& rect, const BRect& updateRect,
+HakiCDEControlLook::DrawSliderThumb(BView* view, BRect& rect, const BRect& updateRect,
 	const rgb_color& base, uint32 flags, orientation orientation)
 {
 	if (!rect.IsValid() || !rect.Intersects(updateRect))
@@ -1336,7 +1109,7 @@ HakiloControlLook::DrawSliderThumb(BView* view, BRect& rect, const BRect& update
 
 
 void
-HakiloControlLook::DrawSliderTriangle(BView* view, BRect& rect,
+HakiCDEControlLook::DrawSliderTriangle(BView* view, BRect& rect,
 	const BRect& updateRect, const rgb_color& base, uint32 flags,
 	orientation orientation)
 {
@@ -1345,7 +1118,7 @@ HakiloControlLook::DrawSliderTriangle(BView* view, BRect& rect,
 
 
 void
-HakiloControlLook::DrawSliderTriangle(BView* view, BRect& rect,
+HakiCDEControlLook::DrawSliderTriangle(BView* view, BRect& rect,
 	const BRect& updateRect, const rgb_color& base, const rgb_color& fill,
 	uint32 flags, orientation orientation)
 {
@@ -1463,7 +1236,7 @@ HakiloControlLook::DrawSliderTriangle(BView* view, BRect& rect,
 
 
 void
-HakiloControlLook::DrawSliderHashMarks(BView* view, BRect& rect,
+HakiCDEControlLook::DrawSliderHashMarks(BView* view, BRect& rect,
 	const BRect& updateRect, const rgb_color& base, int32 count,
 	hash_mark_location location, uint32 flags, orientation orientation)
 {
@@ -1553,7 +1326,7 @@ HakiloControlLook::DrawSliderHashMarks(BView* view, BRect& rect,
 
 
 void
-HakiloControlLook::DrawActiveTab(BView* view, BRect& rect, const BRect& updateRect,
+HakiCDEControlLook::DrawActiveTab(BView* view, BRect& rect, const BRect& updateRect,
 	const rgb_color& base, uint32 flags, uint32 borders, uint32 side)
 {
 	if (!rect.IsValid() || !rect.Intersects(updateRect))
@@ -1732,7 +1505,7 @@ HakiloControlLook::DrawActiveTab(BView* view, BRect& rect, const BRect& updateRe
 
 
 void
-HakiloControlLook::DrawInactiveTab(BView* view, BRect& rect, const BRect& updateRect,
+HakiCDEControlLook::DrawInactiveTab(BView* view, BRect& rect, const BRect& updateRect,
 	const rgb_color& base, uint32 flags, uint32 borders, uint32 side)
 {
 	if (!rect.IsValid() || !rect.Intersects(updateRect))
@@ -1822,7 +1595,7 @@ HakiloControlLook::DrawInactiveTab(BView* view, BRect& rect, const BRect& update
 
 
 void
-HakiloControlLook::DrawSplitter(BView* view, BRect& rect, const BRect& updateRect,
+HakiCDEControlLook::DrawSplitter(BView* view, BRect& rect, const BRect& updateRect,
 	const rgb_color& base, orientation orientation, uint32 flags,
 	uint32 borders)
 {
@@ -1937,7 +1710,7 @@ HakiloControlLook::DrawSplitter(BView* view, BRect& rect, const BRect& updateRec
 
 
 void
-HakiloControlLook::DrawBorder(BView* view, BRect& rect, const BRect& updateRect,
+HakiCDEControlLook::DrawBorder(BView* view, BRect& rect, const BRect& updateRect,
 	const rgb_color& base, border_style borderStyle, uint32 flags,
 	uint32 borders)
 {
@@ -1957,7 +1730,7 @@ HakiloControlLook::DrawBorder(BView* view, BRect& rect, const BRect& updateRect,
 
 
 void
-HakiloControlLook::DrawRaisedBorder(BView* view, BRect& rect,
+HakiCDEControlLook::DrawRaisedBorder(BView* view, BRect& rect,
 	const BRect& updateRect, const rgb_color& base, uint32 flags,
 	uint32 borders)
 {
@@ -1978,7 +1751,7 @@ HakiloControlLook::DrawRaisedBorder(BView* view, BRect& rect,
 
 
 void
-HakiloControlLook::DrawTextControlBorder(BView* view, BRect& rect,
+HakiCDEControlLook::DrawTextControlBorder(BView* view, BRect& rect,
 	const BRect& updateRect, const rgb_color& base, uint32 flags,
 	uint32 borders)
 {
@@ -2048,7 +1821,7 @@ HakiloControlLook::DrawTextControlBorder(BView* view, BRect& rect,
 
 
 void
-HakiloControlLook::DrawGroupFrame(BView* view, BRect& rect, const BRect& updateRect,
+HakiCDEControlLook::DrawGroupFrame(BView* view, BRect& rect, const BRect& updateRect,
 	const rgb_color& base, uint32 borders)
 {
 	rgb_color frameColor = tint_color(base, 1.30);
@@ -2067,7 +1840,7 @@ HakiloControlLook::DrawGroupFrame(BView* view, BRect& rect, const BRect& updateR
 
 
 void
-HakiloControlLook::DrawLabel(BView* view, const char* label, BRect rect,
+HakiCDEControlLook::DrawLabel(BView* view, const char* label, BRect rect,
 	const BRect& updateRect, const rgb_color& base, uint32 flags,
 	const rgb_color* textColor)
 {
@@ -2077,7 +1850,7 @@ HakiloControlLook::DrawLabel(BView* view, const char* label, BRect rect,
 
 
 void
-HakiloControlLook::DrawLabel(BView* view, const char* label, BRect rect,
+HakiCDEControlLook::DrawLabel(BView* view, const char* label, BRect rect,
 	const BRect& updateRect, const rgb_color& base, uint32 flags,
 	const BAlignment& alignment, const rgb_color* textColor)
 {
@@ -2087,7 +1860,7 @@ HakiloControlLook::DrawLabel(BView* view, const char* label, BRect rect,
 
 
 void
-HakiloControlLook::DrawLabel(BView* view, const char* label, const rgb_color& base,
+HakiCDEControlLook::DrawLabel(BView* view, const char* label, const rgb_color& base,
 	uint32 flags, const BPoint& where, const rgb_color* textColor)
 {
 	// setup the text color
@@ -2209,7 +1982,7 @@ HakiloControlLook::DrawLabel(BView* view, const char* label, const rgb_color& ba
 
 
 void
-HakiloControlLook::DrawLabel(BView* view, const char* label, const BBitmap* icon,
+HakiCDEControlLook::DrawLabel(BView* view, const char* label, const BBitmap* icon,
 	BRect rect, const BRect& updateRect, const rgb_color& base, uint32 flags,
 	const BAlignment& alignment, const rgb_color* textColor)
 {
@@ -2282,7 +2055,7 @@ HakiloControlLook::DrawLabel(BView* view, const char* label, const BBitmap* icon
 
 
 void
-HakiloControlLook::GetFrameInsets(frame_type frameType, uint32 flags, float& _left,
+HakiCDEControlLook::GetFrameInsets(frame_type frameType, uint32 flags, float& _left,
 	float& _top, float& _right, float& _bottom)
 {
 	// All frames have the same inset on each side.
@@ -2310,7 +2083,7 @@ HakiloControlLook::GetFrameInsets(frame_type frameType, uint32 flags, float& _le
 
 
 void
-HakiloControlLook::GetBackgroundInsets(background_type backgroundType,
+HakiCDEControlLook::GetBackgroundInsets(background_type backgroundType,
 	uint32 flags, float& _left, float& _top, float& _right, float& _bottom)
 {
 	// Most backgrounds have the same inset on each side.
@@ -2352,7 +2125,7 @@ HakiloControlLook::GetBackgroundInsets(background_type backgroundType,
 
 
 void
-HakiloControlLook::DrawButtonWithPopUpBackground(BView* view, BRect& rect,
+HakiCDEControlLook::DrawButtonWithPopUpBackground(BView* view, BRect& rect,
 	const BRect& updateRect, const rgb_color& base, uint32 flags,
 	uint32 borders, orientation orientation)
 {
@@ -2362,7 +2135,7 @@ HakiloControlLook::DrawButtonWithPopUpBackground(BView* view, BRect& rect,
 
 
 void
-HakiloControlLook::DrawButtonWithPopUpBackground(BView* view, BRect& rect,
+HakiCDEControlLook::DrawButtonWithPopUpBackground(BView* view, BRect& rect,
 	const BRect& updateRect, float radius, const rgb_color& base, uint32 flags,
 	uint32 borders, orientation orientation)
 {
@@ -2372,7 +2145,7 @@ HakiloControlLook::DrawButtonWithPopUpBackground(BView* view, BRect& rect,
 
 
 void
-HakiloControlLook::DrawButtonWithPopUpBackground(BView* view, BRect& rect,
+HakiCDEControlLook::DrawButtonWithPopUpBackground(BView* view, BRect& rect,
 	const BRect& updateRect, float leftTopRadius, float rightTopRadius,
 	float leftBottomRadius, float rightBottomRadius, const rgb_color& base,
 	uint32 flags, uint32 borders, orientation orientation)
@@ -2387,7 +2160,7 @@ HakiloControlLook::DrawButtonWithPopUpBackground(BView* view, BRect& rect,
 
 
 void
-HakiloControlLook::_DrawButtonFrame(BView* view, BRect& rect,
+HakiCDEControlLook::_DrawButtonFrame(BView* view, BRect& rect,
 	const BRect& updateRect, float leftTopRadius, float rightTopRadius,
 	float leftBottomRadius, float rightBottomRadius, const rgb_color& base,
 	const rgb_color& background, float contrast, float brightness,
@@ -2416,7 +2189,8 @@ HakiloControlLook::_DrawButtonFrame(BView* view, BRect& rect,
 		view->PopState();
 		return;
 	}
-
+	
+	/*
 	// outer edge colors
 	rgb_color edgeLightColor;
 	rgb_color edgeShadowColor;
@@ -2446,10 +2220,10 @@ HakiloControlLook::_DrawButtonFrame(BView* view, BRect& rect,
 		rect.InsetBy(1, 1);
 
 		view->SetHighColor(defaultIndicatorColor);
-		view->StrokeRoundRect(rect, leftTopRadius, leftTopRadius);
+		view->StrokeRect(rect);
 		rect.InsetBy(1, 1);
 
-		view->StrokeRoundRect(rect, leftTopRadius, leftTopRadius);
+		view->StrokeRect(rect);
 		rect.InsetBy(1, 1);
 	} else {
 		cornerBgColor = background;
@@ -2472,191 +2246,58 @@ HakiloControlLook::_DrawButtonFrame(BView* view, BRect& rect,
 	rgb_color frameLightColor  = _FrameLightColor(base, flags);
 	rgb_color frameShadowColor = _FrameShadowColor(base, flags);
 
-	// rounded corners
-
-	if ((borders & B_LEFT_BORDER) != 0 && (borders & B_TOP_BORDER) != 0
-		&& leftTopRadius > 0) {
-		// draw left top rounded corner
-		BRect leftTopCorner(floorf(rect.left), floorf(rect.top),
-			floorf(rect.left + leftTopRadius),
-			floorf(rect.top + leftTopRadius));
-		clipping.Exclude(leftTopCorner);
-		_DrawRoundCornerFrameLeftTop(view, leftTopCorner, updateRect,
-			cornerBgColor, edgeShadowColor, frameLightColor);
-	}
-
-	if ((borders & B_TOP_BORDER) != 0 && (borders & B_RIGHT_BORDER) != 0
-		&& rightTopRadius > 0) {
-		// draw right top rounded corner
-		BRect rightTopCorner(floorf(rect.right - rightTopRadius),
-			floorf(rect.top), floorf(rect.right),
-			floorf(rect.top + rightTopRadius));
-		clipping.Exclude(rightTopCorner);
-		_DrawRoundCornerFrameRightTop(view, rightTopCorner, updateRect,
-			cornerBgColor, edgeShadowColor, edgeLightColor,
-			frameLightColor, frameShadowColor);
-	}
-
-	if ((borders & B_LEFT_BORDER) != 0 && (borders & B_BOTTOM_BORDER) != 0
-		&& leftBottomRadius > 0) {
-		// draw left bottom rounded corner
-		BRect leftBottomCorner(floorf(rect.left),
-			floorf(rect.bottom - leftBottomRadius),
-			floorf(rect.left + leftBottomRadius), floorf(rect.bottom));
-		clipping.Exclude(leftBottomCorner);
-		_DrawRoundCornerFrameLeftBottom(view, leftBottomCorner, updateRect,
-			cornerBgColor, edgeShadowColor, edgeLightColor,
-			frameLightColor, frameShadowColor);
-	}
-
-	if ((borders & B_RIGHT_BORDER) != 0 && (borders & B_BOTTOM_BORDER) != 0
-		&& rightBottomRadius > 0) {
-		// draw right bottom rounded corner
-		BRect rightBottomCorner(floorf(rect.right - rightBottomRadius),
-			floorf(rect.bottom - rightBottomRadius), floorf(rect.right),
-			floorf(rect.bottom));
-		clipping.Exclude(rightBottomCorner);
-		_DrawRoundCornerFrameRightBottom(view, rightBottomCorner,
-			updateRect, cornerBgColor, edgeLightColor, frameShadowColor);
-	}
+	
 
 	// clip out the corners
 	view->ConstrainClippingRegion(&clipping);
 
-	// draw outer edge
-	if ((flags & B_DEFAULT_BUTTON) != 0) {
-		_DrawOuterResessedFrame(view, rect, defaultIndicatorColor,
-			contrast * ((flags & B_DISABLED) != 0 ? 0.3 : 0.8),
-			brightness * ((flags & B_DISABLED) != 0 ? 1.0 : 0.9),
-			flags, borders);
-	} else {
-		_DrawOuterResessedFrame(view, rect, background,
-			contrast * ((flags & B_DISABLED) != 0 ? 0.0 : 1.0),
-			brightness * 1.0, flags, borders);
-	}
 
 	view->SetDrawingMode(oldMode);
 
 	// draw frame
-	if ((flags & B_BLEND_FRAME) != 0) {
-		drawing_mode oldDrawingMode = view->DrawingMode();
-		view->SetDrawingMode(B_OP_ALPHA);
-
-		_DrawFrame(view, rect, frameLightColor, frameLightColor,
+	_DrawFrame(view, rect, frameLightColor, frameLightColor,
 			frameShadowColor, frameShadowColor, borders);
-
-		view->SetDrawingMode(oldDrawingMode);
-	} else {
-		_DrawFrame(view, rect, frameLightColor, frameLightColor,
-			frameShadowColor, frameShadowColor, borders);
-	}
-
-	// restore the clipping constraints of the view
-	view->PopState();
-}
-
-void
-HakiloControlLook::_DrawDanoButtonFrame(BView* view, BRect& rect,
-	const BRect& updateRect, float leftTopRadius, float rightTopRadius,
-	float leftBottomRadius, float rightBottomRadius, const rgb_color& base,
-	const rgb_color& background, float contrast, float brightness,
-	uint32 flags, uint32 borders)
-{
-	if (!rect.IsValid())
-		return;
-
-	// save the clipping constraints of the view
-	view->PushState();
-
-	// set clipping constraints to updateRect
-	BRegion clipping(updateRect);
-	view->ConstrainClippingRegion(&clipping);
-
-	// If the button is flat and neither activated nor otherwise highlighted
-	// (mouse hovering or focussed), draw it flat.
-	if ((flags & B_FLAT) != 0
-		&& (flags & (B_ACTIVATED | B_PARTIALLY_ACTIVATED)) == 0
-		&& ((flags & (B_HOVER | B_FOCUSED)) == 0
-			|| (flags & B_DISABLED) != 0)) {
-		_DrawFrame(view, rect, background, background, background,
-			background, borders);
-		_DrawFrame(view, rect, background, background, background,
-			background, borders);
-		view->PopState();
-		return;
-	}
-
-	//rgb_color buttonFrameColor = { 0, 0, 0, 255};
-	//rgb_color buttonShadowHighColor = { 184, 184, 184, 255};
-	//rgb_color buttonShadowLowColor = { 152, 152, 152, 255};
-	//rgb_color buttonActivatedColor = { 103, 103, 200, 255};
+	*/
+	
+	rgb_color rgbButtonMidColor = { 198, 178, 178, 255 };
+	rgb_color rgbButtonHighColor = { 231, 222, 218, 255 };
+	rgb_color rgbButtonLowColor = { 106, 96, 90, 255 };
 	
 
+	
+	if ((flags & B_DEFAULT_BUTTON) != 0) {
+		_DrawFrame(view, rect, rgbButtonLowColor, rgbButtonLowColor,
+			 rgbButtonHighColor,  rgbButtonHighColor, borders);
+		_DrawFrame(view, rect,rgbButtonMidColor, rgbButtonMidColor,
+			 rgbButtonMidColor,  rgbButtonMidColor, borders);
+		_DrawFrame(view, rect,rgbButtonMidColor, rgbButtonMidColor,
+			 rgbButtonMidColor,  rgbButtonMidColor, borders);	 
+		
+	}
+	
 	if ((flags & B_DISABLED) != 0) {
-	//	buttonFrameColor = base;
+		_DrawFrame(view, rect,rgbButtonLowColor, rgbButtonLowColor,
+			 	rgbButtonLowColor,  rgbButtonLowColor, borders);
 	}
 
-	//drawing_mode oldMode = view->DrawingMode();
-
-	if ((flags & B_DEFAULT_BUTTON) != 0) {
-
-		// draw default button indicator
-		// Allow a 1-pixel border of the background to come through.
-		//rect.InsetBy(1, 1);
-		//view->SetHighColor(buttonActivatedColor);
-		//view->FillRoundRect(rect, 2.0, 2.0);
-		//rect.InsetBy(2, 2);
-		/*BRect leftRect(rect);
-		BRect rightRect(rect);
-		
-		leftRect.right = leftRect.left + 5;
-		
-		rightRect.left = rightRect.right - 5;
-		
-
-		view->SetHighColor(buttonFrameColor);
-		view->StrokeRoundRect(leftRect, 2.0, 2.0);
-		view->StrokeRoundRect(rightRect, 2.0, 2.0);
-		leftRect.InsetBy(1, 1);
-		rightRect.InsetBy(1, 1);
-		view->SetHighColor(buttonActivatedColor);
-		view->FillRoundRect(leftRect, 2.0, 2.0);
-		view->FillRoundRect(rightRect, 2.0, 2.0);
-				
-		rect.InsetBy(2, 2);
-		*/
-	} 
-
-
-
-	// clip out the corners
-	view->ConstrainClippingRegion(&clipping);
-
-
-	//view->SetDrawingMode(oldMode);
-
-	// draw frame
-	//if ((flags & B_BLEND_FRAME) != 0) {
-	//	drawing_mode oldDrawingMode = view->DrawingMode();
-	//	view->SetDrawingMode(B_OP_ALPHA);
-
-	//	_DrawFrame(view, rect, frameLightColor, frameLightColor,
-	//		frameShadowColor, frameShadowColor, borders);
-
-		//view->SetDrawingMode(oldDrawingMode);
-	//} else {
-	//	_DrawFrame(view, rect, frameLightColor, frameLightColor,
-	//		frameShadowColor, frameShadowColor, borders);
-	//}
+	
+	if ((flags & B_ACTIVATED) != 0) {
+		_DrawFrame(view, rect, rgbButtonLowColor, rgbButtonLowColor,
+			 rgbButtonHighColor,  rgbButtonHighColor, borders);
+	}
+	else {
+		_DrawFrame(view, rect, rgbButtonHighColor, rgbButtonHighColor,
+			 	rgbButtonLowColor,  rgbButtonLowColor, borders);
+	}
+	
 
 	// restore the clipping constraints of the view
 	view->PopState();
 }
 
 
-
 void
-HakiloControlLook::_DrawOuterResessedFrame(BView* view, BRect& rect,
+HakiCDEControlLook::_DrawOuterResessedFrame(BView* view, BRect& rect,
 	const rgb_color& base, float contrast, float brightness, uint32 flags,
 	uint32 borders)
 {
@@ -2682,7 +2323,7 @@ HakiloControlLook::_DrawOuterResessedFrame(BView* view, BRect& rect,
 
 
 void
-HakiloControlLook::_DrawFrame(BView* view, BRect& rect, const rgb_color& left,
+HakiCDEControlLook::_DrawFrame(BView* view, BRect& rect, const rgb_color& left,
 	const rgb_color& top, const rgb_color& right, const rgb_color& bottom,
 	uint32 borders)
 {
@@ -2718,7 +2359,7 @@ HakiloControlLook::_DrawFrame(BView* view, BRect& rect, const rgb_color& left,
 
 
 void
-HakiloControlLook::_DrawFrame(BView* view, BRect& rect, const rgb_color& left,
+HakiCDEControlLook::_DrawFrame(BView* view, BRect& rect, const rgb_color& left,
 	const rgb_color& top, const rgb_color& right, const rgb_color& bottom,
 	const rgb_color& rightTop, const rgb_color& leftBottom, uint32 borders)
 {
@@ -2769,7 +2410,7 @@ HakiloControlLook::_DrawFrame(BView* view, BRect& rect, const rgb_color& left,
 
 
 void
-HakiloControlLook::_DrawButtonBackground(BView* view, BRect& rect,
+HakiCDEControlLook::_DrawButtonBackground(BView* view, BRect& rect,
 	const BRect& updateRect, float leftTopRadius, float rightTopRadius,
 	float leftBottomRadius, float rightBottomRadius, const rgb_color& base,
 	bool popupIndicator, uint32 flags, uint32 borders, orientation orientation)
@@ -2792,61 +2433,22 @@ HakiloControlLook::_DrawButtonBackground(BView* view, BRect& rect,
 			|| (flags & B_DISABLED) != 0)) {
 		_DrawFlatButtonBackground(view, rect, updateRect, base, popupIndicator,
 			flags, borders, orientation);
-			
 	} else {
-		_DrawNonFlatButtonBackground(view, rect, updateRect, clipping,
-			leftTopRadius, rightTopRadius, leftBottomRadius, rightBottomRadius,
-			base, popupIndicator, flags, borders, orientation);
+		//_DrawNonFlatButtonBackground(view, rect, updateRect, clipping,
+		//	leftTopRadius, rightTopRadius, leftBottomRadius, rightBottomRadius,
+		//	base, popupIndicator, flags, borders, orientation);
+		rgb_color rgbButtonMidColor = { 198, 178, 178, 255 };
+		_DrawFlatButtonBackground(view, rect, updateRect, rgbButtonMidColor, popupIndicator,
+			flags, borders, orientation);	
 	}
 
 	// restore the clipping constraints of the view
 	view->PopState();
 }
 
-void
-HakiloControlLook::_DrawHakiButtonBackground(BView* view, BRect& rect,
-	const BRect& updateRect, float leftTopRadius, float rightTopRadius,
-	float leftBottomRadius, float rightBottomRadius, const rgb_color& base,
-	bool popupIndicator, uint32 flags, uint32 borders, orientation orientation)
-{
-	if (!rect.IsValid())
-		return;
-
-	// save the clipping constraints of the view
-	view->PushState();
-
-	// set clipping constraints to updateRect
-	BRegion clipping(updateRect);
-	view->ConstrainClippingRegion(&clipping);
-
-	// If the button is flat and neither activated nor otherwise highlighted
-	// (mouse hovering or focussed), draw it flat.
-	if ((flags & B_FLAT) != 0
-		&& (flags & (B_ACTIVATED | B_PARTIALLY_ACTIVATED)) == 0
-		&& ((flags & (B_HOVER | B_FOCUSED)) == 0
-			|| (flags & B_DISABLED) != 0)) {
-		_DrawFlatButtonBackground(view, rect, updateRect, base, popupIndicator,
-			flags, borders, orientation);
-			
-	} else {
-		/*
-		_DrawNonFlatButtonBackground(view, rect, updateRect, clipping,
-			leftTopRadius, rightTopRadius, leftBottomRadius, rightBottomRadius,
-			base, popupIndicator, flags, borders, orientation);
-			*/
-			
-		_DrawDanoButtonBackground(view, rect, updateRect, clipping,
-			leftTopRadius, rightTopRadius, leftBottomRadius, rightBottomRadius,
-			base, popupIndicator, flags, borders, orientation);	
-
-	}
-
-	// restore the clipping constraints of the view
-	view->PopState();
-}
 
 void
-HakiloControlLook::_DrawFlatButtonBackground(BView* view, BRect& rect,
+HakiCDEControlLook::_DrawFlatButtonBackground(BView* view, BRect& rect,
 	const BRect& updateRect, const rgb_color& base, bool popupIndicator,
 	uint32 flags, uint32 borders, orientation orientation)
 {
@@ -2871,295 +2473,7 @@ HakiloControlLook::_DrawFlatButtonBackground(BView* view, BRect& rect,
 
 
 void
-HakiloControlLook::_DrawNonFlatButtonBackground(BView* view, BRect& rect,
-	const BRect& updateRect, BRegion& clipping, float leftTopRadius,
-	float rightTopRadius, float leftBottomRadius, float rightBottomRadius,
-	const rgb_color& base, bool popupIndicator, uint32 flags, uint32 borders,
-	orientation orientation)
-{
-	// inner bevel colors
-	rgb_color bevelLightColor  = _BevelLightColor(base, flags);
-	rgb_color bevelShadowColor = _BevelShadowColor(base, flags);
-
-	// button background color
-	rgb_color buttonBgColor;
-	if ((flags & B_DISABLED) != 0)
-		buttonBgColor = tint_color(base, 0.7);
-	else
-		buttonBgColor = tint_color(base, B_LIGHTEN_1_TINT);
-
-	// surface top gradient
-	BGradientLinear fillGradient;
-	_MakeButtonGradient(fillGradient, rect, base, flags, orientation);
-
-	// rounded corners
-
-	if ((borders & B_LEFT_BORDER) != 0 && (borders & B_TOP_BORDER) != 0
-		&& leftTopRadius > 0) {
-		// draw left top rounded corner
-		BRect leftTopCorner(floorf(rect.left), floorf(rect.top),
-			floorf(rect.left + leftTopRadius - 2.0),
-			floorf(rect.top + leftTopRadius - 2.0));
-		clipping.Exclude(leftTopCorner);
-		_DrawRoundCornerBackgroundLeftTop(view, leftTopCorner, updateRect,
-			bevelLightColor, fillGradient);
-	}
-
-	if ((borders & B_TOP_BORDER) != 0 && (borders & B_RIGHT_BORDER) != 0
-		&& rightTopRadius > 0) {
-		// draw right top rounded corner
-		BRect rightTopCorner(floorf(rect.right - rightTopRadius + 2.0),
-			floorf(rect.top), floorf(rect.right),
-			floorf(rect.top + rightTopRadius - 2.0));
-		clipping.Exclude(rightTopCorner);
-		_DrawRoundCornerBackgroundRightTop(view, rightTopCorner,
-			updateRect, bevelLightColor, bevelShadowColor, fillGradient);
-	}
-
-	if ((borders & B_LEFT_BORDER) != 0 && (borders & B_BOTTOM_BORDER) != 0
-		&& leftBottomRadius > 0) {
-		// draw left bottom rounded corner
-		BRect leftBottomCorner(floorf(rect.left),
-			floorf(rect.bottom - leftBottomRadius + 2.0),
-			floorf(rect.left + leftBottomRadius - 2.0),
-			floorf(rect.bottom));
-		clipping.Exclude(leftBottomCorner);
-		_DrawRoundCornerBackgroundLeftBottom(view, leftBottomCorner,
-			updateRect, bevelLightColor, bevelShadowColor, fillGradient);
-	}
-
-	if ((borders & B_RIGHT_BORDER) != 0 && (borders & B_BOTTOM_BORDER) != 0
-		&& rightBottomRadius > 0) {
-		// draw right bottom rounded corner
-		BRect rightBottomCorner(floorf(rect.right - rightBottomRadius + 2.0),
-			floorf(rect.bottom - rightBottomRadius + 2.0), floorf(rect.right),
-			floorf(rect.bottom));
-		clipping.Exclude(rightBottomCorner);
-		_DrawRoundCornerBackgroundRightBottom(view, rightBottomCorner,
-			updateRect, bevelShadowColor, fillGradient);
-	}
-
-	// clip out the corners
-	view->ConstrainClippingRegion(&clipping);
-
-	// draw inner bevel
-
-	if ((flags & B_ACTIVATED) != 0) {
-		view->BeginLineArray(4);
-
-		// shadow along left/top borders
-		if (borders & B_LEFT_BORDER) {
-			view->AddLine(BPoint(rect.left, rect.top),
-				BPoint(rect.left, rect.bottom), bevelLightColor);
-			rect.left++;
-		}
-		if (borders & B_TOP_BORDER) {
-			view->AddLine(BPoint(rect.left, rect.top),
-				BPoint(rect.right, rect.top), bevelLightColor);
-			rect.top++;
-		}
-
-		// softer shadow along left/top borders
-		if (borders & B_LEFT_BORDER) {
-			view->AddLine(BPoint(rect.left, rect.top),
-				BPoint(rect.left, rect.bottom), bevelShadowColor);
-			rect.left++;
-		}
-		if (borders & B_TOP_BORDER) {
-			view->AddLine(BPoint(rect.left, rect.top),
-				BPoint(rect.right, rect.top), bevelShadowColor);
-			rect.top++;
-		}
-
-		view->EndLineArray();
-	} else {
-		_DrawFrame(view, rect,
-			bevelLightColor, bevelLightColor,
-			bevelShadowColor, bevelShadowColor,
-			buttonBgColor, buttonBgColor, borders);
-	}
-
-	if (popupIndicator) {
-		BRect indicatorRect(rect);
-		rect.right -= kButtonPopUpIndicatorWidth;
-		indicatorRect.left = rect.right + 3;
-			// 2 pixels for the separator
-
-		// Even when depressed we want the pop-up indicator background and
-		// separator to cover the area up to the top.
-		if ((flags & B_ACTIVATED) != 0)
-			indicatorRect.top--;
-
-		// draw the separator
-		rgb_color separatorBaseColor = base;
-		if ((flags & B_ACTIVATED) != 0)
-			separatorBaseColor = tint_color(base, B_DARKEN_1_TINT);
-
-		rgb_color separatorLightColor = _EdgeLightColor(separatorBaseColor,
-			(flags & B_DISABLED) != 0 ? 0.7 : 1.0, 1.0, flags);
-		rgb_color separatorShadowColor = _EdgeShadowColor(separatorBaseColor,
-			(flags & B_DISABLED) != 0 ? 0.7 : 1.0, 1.0, flags);
-
-		view->BeginLineArray(2);
-
-		view->AddLine(BPoint(indicatorRect.left - 2, indicatorRect.top),
-			BPoint(indicatorRect.left - 2, indicatorRect.bottom),
-			separatorShadowColor);
-		view->AddLine(BPoint(indicatorRect.left - 1, indicatorRect.top),
-			BPoint(indicatorRect.left - 1, indicatorRect.bottom),
-			separatorLightColor);
-
-		view->EndLineArray();
-
-		// draw background and pop-up marker
-		_DrawMenuFieldBackgroundInside(view, indicatorRect, updateRect,
-			0.0f, rightTopRadius, 0.0f, rightBottomRadius, base, flags, 0);
-
-		if ((flags & B_ACTIVATED) != 0)
-			indicatorRect.top++;
-
-		_DrawPopUpMarker(view, indicatorRect, base, flags);
-	}
-
-	// fill in the background
-	view->FillRect(rect, fillGradient);
-}
-
-
-void
-HakiloControlLook::_DrawDanoButtonBackground(BView* view, BRect& rect,
-	const BRect& updateRect, BRegion& clipping, float leftTopRadius,
-	float rightTopRadius, float leftBottomRadius, float rightBottomRadius,
-	const rgb_color& base, bool popupIndicator, uint32 flags, uint32 borders,
-	orientation orientation)
-{
-	
-	rgb_color buttonFrameColor = { 0, 0, 0, 255};
-	rgb_color buttonShadowHighColor = { 184, 184, 184, 255};
-	rgb_color buttonShadowLowColor = { 152, 152, 152, 255};
-	rgb_color markColor= {103, 103, 200, 255};
-	
-	if ((flags & B_DEFAULT_BUTTON) != 0) {
-		rect.InsetBy(1,1);
-	//	view->SetLowColor(base);
-	//	view->SetHighColor(markColor);
-	//	view->FillRoundRect(rect, 2.0, 2.0);
-		rect.InsetBy(2,2);
-	}
-	
-	rect.right -= 2;
-	rect.bottom -= 2;
-	
-	BRect rectShadowLow(rect);
-	rectShadowLow.left += 1;
-	rectShadowLow.top += 1;
-	rectShadowLow.right += 1;
-	rectShadowLow.bottom += 1;
-		
-	BRect rectShadowHigh(rect);
-	rectShadowHigh.left += 2;
-	rectShadowHigh.top += 2;
-	rectShadowHigh.right += 2;
-	rectShadowHigh.bottom += 2;	
-	
-	view->SetLowColor(base);
-	
-	
-	// button background color and shadow
-	rgb_color buttonBgColor;
-	if ((flags & B_DISABLED) != 0) {
-		buttonBgColor = base;
-		
-		view->SetHighColor(base);
-		view->FillRoundRect(rectShadowHigh, 2.0, 2.0);
-		view->FillRoundRect(rectShadowLow, 2.0, 2.0);
-	}
-	else {
-		buttonBgColor = (rgb_color) {240, 240, 240, 255};
-		
-		view->SetHighColor(buttonShadowHighColor);
-		view->FillRoundRect(rectShadowHigh, 2.0, 2.0);
-		
-		view->SetHighColor(buttonShadowLowColor);
-		view->FillRoundRect(rectShadowLow, 2.0, 2.0);
-	}
-
-	// clip out the corners
-	view->ConstrainClippingRegion(&clipping);
-
-	if ((flags & B_ACTIVATED) != 0) {
-		//buttonBgColor = buttonActivatedColor;
-		buttonBgColor =  (rgb_color) {240, 240, 240, 255};
-		
-		
-		if ((flags & B_DEFAULT_BUTTON) != 0) {
-			view->SetHighColor(markColor);
-		}
-		else {
-			view->SetHighColor(base);
-		}
-		
-		//view->SetHighColor(base);
-		view->FillRoundRect(rectShadowHigh, 2.0, 2.0);
-		view->FillRoundRect(rectShadowLow, 2.0, 2.0);
-	} 
-	
-
-		
-
-	if (popupIndicator) {
-		BRect indicatorRect(rect);
-		rect.right -= kButtonPopUpIndicatorWidth;
-		indicatorRect.left = rect.right + 3;
-			// 2 pixels for the separator
-
-		// Even when depressed we want the pop-up indicator background and
-		// separator to cover the area up to the top.
-		if ((flags & B_ACTIVATED) != 0)
-			indicatorRect.top--;
-
-		// draw the separator
-		rgb_color separatorBaseColor = base;
-		if ((flags & B_ACTIVATED) != 0)
-			separatorBaseColor = tint_color(base, B_DARKEN_1_TINT);
-
-		rgb_color separatorLightColor = _EdgeLightColor(separatorBaseColor,
-			(flags & B_DISABLED) != 0 ? 0.7 : 1.0, 1.0, flags);
-		rgb_color separatorShadowColor = _EdgeShadowColor(separatorBaseColor,
-			(flags & B_DISABLED) != 0 ? 0.7 : 1.0, 1.0, flags);
-
-		view->BeginLineArray(2);
-
-		view->AddLine(BPoint(indicatorRect.left - 2, indicatorRect.top),
-			BPoint(indicatorRect.left - 2, indicatorRect.bottom),
-			separatorShadowColor);
-		view->AddLine(BPoint(indicatorRect.left - 1, indicatorRect.top),
-			BPoint(indicatorRect.left - 1, indicatorRect.bottom),
-			separatorLightColor);
-
-		view->EndLineArray();
-
-		// draw background and pop-up marker
-		_DrawMenuFieldBackgroundInside(view, indicatorRect, updateRect,
-			0.0f, rightTopRadius, 0.0f, rightBottomRadius, base, flags, 0);
-
-		if ((flags & B_ACTIVATED) != 0)
-			indicatorRect.top++;
-
-		_DrawPopUpMarker(view, indicatorRect, base, flags);
-	}
-
-	
-	view->SetHighColor(buttonBgColor);
-	view->FillRoundRect(rect, 2.0, 2.0);
-		
-	view->SetHighColor(buttonFrameColor);
-	view->StrokeRoundRect(rect, 2.0, 2.0);
-}
-
-
-void
-HakiloControlLook::_DrawPopUpMarker(BView* view, const BRect& rect,
+HakiCDEControlLook::_DrawPopUpMarker(BView* view, const BRect& rect,
 	const rgb_color& base, uint32 flags)
 {
 	BPoint center(roundf((rect.left + rect.right) / 2.0),
@@ -3186,7 +2500,7 @@ HakiloControlLook::_DrawPopUpMarker(BView* view, const BRect& rect,
 
 
 void
-HakiloControlLook::_DrawMenuFieldBackgroundOutside(BView* view, BRect& rect,
+HakiCDEControlLook::_DrawMenuFieldBackgroundOutside(BView* view, BRect& rect,
 	const BRect& updateRect, float leftTopRadius, float rightTopRadius,
 	float leftBottomRadius, float rightBottomRadius, const rgb_color& base,
 	bool popupIndicator, uint32 flags)
@@ -3229,7 +2543,7 @@ HakiloControlLook::_DrawMenuFieldBackgroundOutside(BView* view, BRect& rect,
 
 
 void
-HakiloControlLook::_DrawMenuFieldBackgroundInside(BView* view, BRect& rect,
+HakiCDEControlLook::_DrawMenuFieldBackgroundInside(BView* view, BRect& rect,
 	const BRect& updateRect, float leftTopRadius, float rightTopRadius,
 	float leftBottomRadius, float rightBottomRadius, const rgb_color& base,
 	uint32 flags, uint32 borders)
@@ -3281,126 +2595,6 @@ HakiloControlLook::_DrawMenuFieldBackgroundInside(BView* view, BRect& rect,
 	BGradientLinear fillGradient;
 	_MakeButtonGradient(fillGradient, rect, indicatorBase, flags);
 
-	// rounded corners
-
-	if ((borders & B_LEFT_BORDER) != 0 && (borders & B_TOP_BORDER) != 0
-		&& leftTopRadius > 0) {
-		// draw left top rounded corner
-		BRect leftTopCorner(floorf(rect.left), floorf(rect.top),
-			floorf(rect.left + leftTopRadius - 2.0),
-			floorf(rect.top + leftTopRadius - 2.0));
-		clipping.Exclude(leftTopCorner);
-
-		BRegion cornerClipping(leftTopCorner);
-		view->ConstrainClippingRegion(&cornerClipping);
-
-		BRect ellipseRect(leftTopCorner);
-		ellipseRect.InsetBy(-1.0, -1.0);
-		ellipseRect.right = ellipseRect.left + ellipseRect.Width() * 2;
-		ellipseRect.bottom = ellipseRect.top + ellipseRect.Height() * 2;
-
-		// draw the frame (again)
-		view->SetHighColor(frameLightColor);
-		view->FillEllipse(ellipseRect);
-
-		// draw the bevel and background
-		_DrawRoundCornerBackgroundLeftTop(view, leftTopCorner, updateRect,
-			bevelColor1, fillGradient);
-	}
-
-	if ((borders & B_TOP_BORDER) != 0 && (borders & B_RIGHT_BORDER) != 0
-		&& rightTopRadius > 0) {
-		// draw right top rounded corner
-		BRect rightTopCorner(floorf(rect.right - rightTopRadius + 2.0),
-			floorf(rect.top), floorf(rect.right),
-			floorf(rect.top + rightTopRadius - 2.0));
-		clipping.Exclude(rightTopCorner);
-
-		BRegion cornerClipping(rightTopCorner);
-		view->ConstrainClippingRegion(&cornerClipping);
-
-		BRect ellipseRect(rightTopCorner);
-		ellipseRect.InsetBy(-1.0, -1.0);
-		ellipseRect.left = ellipseRect.right - ellipseRect.Width() * 2;
-		ellipseRect.bottom = ellipseRect.top + ellipseRect.Height() * 2;
-
-		// draw the frame (again)
-		if (frameLightColor == frameShadowColor) {
-			view->SetHighColor(frameLightColor);
-			view->FillEllipse(ellipseRect);
-		} else {
-			BGradientLinear gradient;
-			gradient.AddColor(frameLightColor, 0);
-			gradient.AddColor(frameShadowColor, 255);
-			gradient.SetStart(rightTopCorner.LeftTop());
-			gradient.SetEnd(rightTopCorner.RightBottom());
-			view->FillEllipse(ellipseRect, gradient);
-		}
-
-		// draw the bevel and background
-		_DrawRoundCornerBackgroundRightTop(view, rightTopCorner, updateRect,
-			bevelColor1, bevelColor3, fillGradient);
-	}
-
-	if ((borders & B_LEFT_BORDER) != 0 && (borders & B_BOTTOM_BORDER) != 0
-		&& leftBottomRadius > 0) {
-		// draw left bottom rounded corner
-		BRect leftBottomCorner(floorf(rect.left),
-			floorf(rect.bottom - leftBottomRadius + 2.0),
-			floorf(rect.left + leftBottomRadius - 2.0),
-			floorf(rect.bottom));
-		clipping.Exclude(leftBottomCorner);
-
-		BRegion cornerClipping(leftBottomCorner);
-		view->ConstrainClippingRegion(&cornerClipping);
-
-		BRect ellipseRect(leftBottomCorner);
-		ellipseRect.InsetBy(-1.0, -1.0);
-		ellipseRect.right = ellipseRect.left + ellipseRect.Width() * 2;
-		ellipseRect.top = ellipseRect.bottom - ellipseRect.Height() * 2;
-
-		// draw the frame (again)
-		if (frameLightColor == frameShadowColor) {
-			view->SetHighColor(frameLightColor);
-			view->FillEllipse(ellipseRect);
-		} else {
-			BGradientLinear gradient;
-			gradient.AddColor(frameLightColor, 0);
-			gradient.AddColor(frameShadowColor, 255);
-			gradient.SetStart(leftBottomCorner.LeftTop());
-			gradient.SetEnd(leftBottomCorner.RightBottom());
-			view->FillEllipse(ellipseRect, gradient);
-		}
-
-		// draw the bevel and background
-		_DrawRoundCornerBackgroundLeftBottom(view, leftBottomCorner,
-			updateRect, bevelColor2, bevelColor3, fillGradient);
-	}
-
-	if ((borders & B_RIGHT_BORDER) != 0 && (borders & B_BOTTOM_BORDER) != 0
-		&& rightBottomRadius > 0) {
-		// draw right bottom rounded corner
-		BRect rightBottomCorner(floorf(rect.right - rightBottomRadius + 2.0),
-			floorf(rect.bottom - rightBottomRadius + 2.0), floorf(rect.right),
-			floorf(rect.bottom));
-		clipping.Exclude(rightBottomCorner);
-
-		BRegion cornerClipping(rightBottomCorner);
-		view->ConstrainClippingRegion(&cornerClipping);
-
-		BRect ellipseRect(rightBottomCorner);
-		ellipseRect.InsetBy(-1.0, -1.0);
-		ellipseRect.left = ellipseRect.right - ellipseRect.Width() * 2;
-		ellipseRect.top = ellipseRect.bottom - ellipseRect.Height() * 2;
-
-		// draw the frame (again)
-		view->SetHighColor(frameShadowColor);
-		view->FillEllipse(ellipseRect);
-
-		// draw the bevel and background
-		_DrawRoundCornerBackgroundRightBottom(view, rightBottomCorner,
-			updateRect, bevelColor3, fillGradient);
-	}
 
 	// clip out the corners
 	view->ConstrainClippingRegion(&clipping);
@@ -3421,7 +2615,7 @@ HakiloControlLook::_DrawMenuFieldBackgroundInside(BView* view, BRect& rect,
 
 
 void
-HakiloControlLook::_DrawRoundCornerLeftTop(BView* view, BRect& cornerRect,
+HakiCDEControlLook::_DrawRoundCornerLeftTop(BView* view, BRect& cornerRect,
 	const BRect& updateRect, const rgb_color& background,
 	const rgb_color& edgeColor, const rgb_color& frameColor,
 	const rgb_color& bevelColor, const BGradientLinear& fillGradient)
@@ -3434,7 +2628,7 @@ HakiloControlLook::_DrawRoundCornerLeftTop(BView* view, BRect& cornerRect,
 
 
 void
-HakiloControlLook::_DrawRoundCornerFrameLeftTop(BView* view, BRect& cornerRect,
+HakiCDEControlLook::_DrawRoundCornerFrameLeftTop(BView* view, BRect& cornerRect,
 	const BRect& updateRect, const rgb_color& background,
 	const rgb_color& edgeColor, const rgb_color& frameColor)
 {
@@ -3468,7 +2662,7 @@ HakiloControlLook::_DrawRoundCornerFrameLeftTop(BView* view, BRect& cornerRect,
 
 
 void
-HakiloControlLook::_DrawRoundCornerBackgroundLeftTop(BView* view, BRect& cornerRect,
+HakiCDEControlLook::_DrawRoundCornerBackgroundLeftTop(BView* view, BRect& cornerRect,
 	const BRect& updateRect, const rgb_color& bevelColor,
 	const BGradientLinear& fillGradient)
 {
@@ -3491,7 +2685,7 @@ HakiloControlLook::_DrawRoundCornerBackgroundLeftTop(BView* view, BRect& cornerR
 
 
 void
-HakiloControlLook::_DrawRoundCornerRightTop(BView* view, BRect& cornerRect,
+HakiCDEControlLook::_DrawRoundCornerRightTop(BView* view, BRect& cornerRect,
 	const BRect& updateRect, const rgb_color& background,
 	const rgb_color& edgeTopColor, const rgb_color& edgeRightColor,
 	const rgb_color& frameTopColor, const rgb_color& frameRightColor,
@@ -3507,7 +2701,7 @@ HakiloControlLook::_DrawRoundCornerRightTop(BView* view, BRect& cornerRect,
 
 
 void
-HakiloControlLook::_DrawRoundCornerFrameRightTop(BView* view, BRect& cornerRect,
+HakiCDEControlLook::_DrawRoundCornerFrameRightTop(BView* view, BRect& cornerRect,
 	const BRect& updateRect, const rgb_color& background,
 	const rgb_color& edgeTopColor, const rgb_color& edgeRightColor,
 	const rgb_color& frameTopColor, const rgb_color& frameRightColor)
@@ -3554,7 +2748,7 @@ HakiloControlLook::_DrawRoundCornerFrameRightTop(BView* view, BRect& cornerRect,
 
 
 void
-HakiloControlLook::_DrawRoundCornerBackgroundRightTop(BView* view, BRect& cornerRect,
+HakiCDEControlLook::_DrawRoundCornerBackgroundRightTop(BView* view, BRect& cornerRect,
 	const BRect& updateRect, const rgb_color& bevelTopColor,
 	const rgb_color& bevelRightColor, const BGradientLinear& fillGradient)
 {
@@ -3581,7 +2775,7 @@ HakiloControlLook::_DrawRoundCornerBackgroundRightTop(BView* view, BRect& corner
 
 
 void
-HakiloControlLook::_DrawRoundCornerLeftBottom(BView* view, BRect& cornerRect,
+HakiCDEControlLook::_DrawRoundCornerLeftBottom(BView* view, BRect& cornerRect,
 	const BRect& updateRect, const rgb_color& background,
 	const rgb_color& edgeLeftColor, const rgb_color& edgeBottomColor,
 	const rgb_color& frameLeftColor, const rgb_color& frameBottomColor,
@@ -3597,7 +2791,7 @@ HakiloControlLook::_DrawRoundCornerLeftBottom(BView* view, BRect& cornerRect,
 
 
 void
-HakiloControlLook::_DrawRoundCornerFrameLeftBottom(BView* view, BRect& cornerRect,
+HakiCDEControlLook::_DrawRoundCornerFrameLeftBottom(BView* view, BRect& cornerRect,
 	const BRect& updateRect, const rgb_color& background,
 	const rgb_color& edgeLeftColor, const rgb_color& edgeBottomColor,
 	const rgb_color& frameLeftColor, const rgb_color& frameBottomColor)
@@ -3644,7 +2838,7 @@ HakiloControlLook::_DrawRoundCornerFrameLeftBottom(BView* view, BRect& cornerRec
 
 
 void
-HakiloControlLook::_DrawRoundCornerBackgroundLeftBottom(BView* view, BRect& cornerRect,
+HakiCDEControlLook::_DrawRoundCornerBackgroundLeftBottom(BView* view, BRect& cornerRect,
 	const BRect& updateRect, const rgb_color& bevelLeftColor,
 	const rgb_color& bevelBottomColor, const BGradientLinear& fillGradient)
 {
@@ -3671,7 +2865,7 @@ HakiloControlLook::_DrawRoundCornerBackgroundLeftBottom(BView* view, BRect& corn
 
 
 void
-HakiloControlLook::_DrawRoundCornerRightBottom(BView* view, BRect& cornerRect,
+HakiCDEControlLook::_DrawRoundCornerRightBottom(BView* view, BRect& cornerRect,
 	const BRect& updateRect, const rgb_color& background,
 	const rgb_color& edgeColor, const rgb_color& frameColor,
 	const rgb_color& bevelColor, const BGradientLinear& fillGradient)
@@ -3684,7 +2878,7 @@ HakiloControlLook::_DrawRoundCornerRightBottom(BView* view, BRect& cornerRect,
 
 
 void
-HakiloControlLook::_DrawRoundCornerFrameRightBottom(BView* view, BRect& cornerRect,
+HakiCDEControlLook::_DrawRoundCornerFrameRightBottom(BView* view, BRect& cornerRect,
 	const BRect& updateRect, const rgb_color& background,
 	const rgb_color& edgeColor, const rgb_color& frameColor)
 {
@@ -3718,7 +2912,7 @@ HakiloControlLook::_DrawRoundCornerFrameRightBottom(BView* view, BRect& cornerRe
 
 
 void
-HakiloControlLook::_DrawRoundCornerBackgroundRightBottom(BView* view,
+HakiCDEControlLook::_DrawRoundCornerBackgroundRightBottom(BView* view,
 	BRect& cornerRect, const BRect& updateRect, const rgb_color& bevelColor,
 	const BGradientLinear& fillGradient)
 {
@@ -3741,7 +2935,7 @@ HakiloControlLook::_DrawRoundCornerBackgroundRightBottom(BView* view,
 
 
 void
-HakiloControlLook::_DrawRoundBarCorner(BView* view, BRect& rect,
+HakiCDEControlLook::_DrawRoundBarCorner(BView* view, BRect& rect,
 	const BRect& updateRect,
 	const rgb_color& edgeLightColor, const rgb_color& edgeShadowColor,
 	const rgb_color& frameLightColor, const rgb_color& frameShadowColor,
@@ -3798,7 +2992,7 @@ HakiloControlLook::_DrawRoundBarCorner(BView* view, BRect& rect,
 
 
 rgb_color
-HakiloControlLook::_EdgeLightColor(const rgb_color& base, float contrast,
+HakiCDEControlLook::_EdgeLightColor(const rgb_color& base, float contrast,
 	float brightness, uint32 flags)
 {
 	rgb_color edgeLightColor;
@@ -3831,7 +3025,7 @@ HakiloControlLook::_EdgeLightColor(const rgb_color& base, float contrast,
 
 
 rgb_color
-HakiloControlLook::_EdgeShadowColor(const rgb_color& base, float contrast,
+HakiCDEControlLook::_EdgeShadowColor(const rgb_color& base, float contrast,
 	float brightness, uint32 flags)
 {
 	rgb_color edgeShadowColor;
@@ -3861,7 +3055,7 @@ HakiloControlLook::_EdgeShadowColor(const rgb_color& base, float contrast,
 
 
 rgb_color
-HakiloControlLook::_FrameLightColor(const rgb_color& base, uint32 flags)
+HakiCDEControlLook::_FrameLightColor(const rgb_color& base, uint32 flags)
 {
 	if ((flags & B_FOCUSED) != 0)
 		return ui_color(B_KEYBOARD_NAVIGATION_COLOR);
@@ -3892,7 +3086,7 @@ HakiloControlLook::_FrameLightColor(const rgb_color& base, uint32 flags)
 
 
 rgb_color
-HakiloControlLook::_FrameShadowColor(const rgb_color& base, uint32 flags)
+HakiCDEControlLook::_FrameShadowColor(const rgb_color& base, uint32 flags)
 {
 	if ((flags & B_FOCUSED) != 0)
 		return ui_color(B_KEYBOARD_NAVIGATION_COLOR);
@@ -3931,7 +3125,7 @@ HakiloControlLook::_FrameShadowColor(const rgb_color& base, uint32 flags)
 
 
 rgb_color
-HakiloControlLook::_BevelLightColor(const rgb_color& base, uint32 flags)
+HakiCDEControlLook::_BevelLightColor(const rgb_color& base, uint32 flags)
 {
 	rgb_color bevelLightColor = tint_color(base, 0.2);
 
@@ -3946,7 +3140,7 @@ HakiloControlLook::_BevelLightColor(const rgb_color& base, uint32 flags)
 
 
 rgb_color
-HakiloControlLook::_BevelShadowColor(const rgb_color& base, uint32 flags)
+HakiCDEControlLook::_BevelShadowColor(const rgb_color& base, uint32 flags)
 {
 	rgb_color bevelShadowColor = tint_color(base, 1.08);
 
@@ -3960,7 +3154,7 @@ HakiloControlLook::_BevelShadowColor(const rgb_color& base, uint32 flags)
 }
 
 void
-HakiloControlLook::_FillNoGradient(BView* view, const BRect& rect,
+HakiCDEControlLook::_FillNoGradient(BView* view, const BRect& rect,
 	const rgb_color& base)
 {
 	BGradientLinear gradient;
@@ -3972,7 +3166,7 @@ HakiloControlLook::_FillNoGradient(BView* view, const BRect& rect,
 
 
 void
-HakiloControlLook::_FillGradient(BView* view, const BRect& rect,
+HakiCDEControlLook::_FillGradient(BView* view, const BRect& rect,
 	const rgb_color& base, float topTint, float bottomTint,
 	orientation orientation)
 {
@@ -3984,7 +3178,7 @@ HakiloControlLook::_FillGradient(BView* view, const BRect& rect,
 
 
 void
-HakiloControlLook::_FillGlossyGradient(BView* view, const BRect& rect,
+HakiCDEControlLook::_FillGlossyGradient(BView* view, const BRect& rect,
 	const rgb_color& base, float topTint, float middle1Tint,
 	float middle2Tint, float bottomTint, orientation orientation)
 {
@@ -3995,7 +3189,7 @@ HakiloControlLook::_FillGlossyGradient(BView* view, const BRect& rect,
 }
 
 void
-HakiloControlLook::_MakeNoGradient(BGradientLinear& gradient, const BRect& rect,
+HakiCDEControlLook::_MakeNoGradient(BGradientLinear& gradient, const BRect& rect,
 	const rgb_color& base) const
 {
 	gradient.AddColor(base, 0);
@@ -4005,7 +3199,7 @@ HakiloControlLook::_MakeNoGradient(BGradientLinear& gradient, const BRect& rect,
 }
 
 void
-HakiloControlLook::_MakeGradient(BGradientLinear& gradient, const BRect& rect,
+HakiCDEControlLook::_MakeGradient(BGradientLinear& gradient, const BRect& rect,
 	const rgb_color& base, float topTint, float bottomTint,
 	orientation orientation) const
 {
@@ -4020,7 +3214,7 @@ HakiloControlLook::_MakeGradient(BGradientLinear& gradient, const BRect& rect,
 
 
 void
-HakiloControlLook::_MakeGlossyGradient(BGradientLinear& gradient, const BRect& rect,
+HakiCDEControlLook::_MakeGlossyGradient(BGradientLinear& gradient, const BRect& rect,
 	const rgb_color& base, float topTint, float middle1Tint,
 	float middle2Tint, float bottomTint,
 	orientation orientation) const
@@ -4038,7 +3232,7 @@ HakiloControlLook::_MakeGlossyGradient(BGradientLinear& gradient, const BRect& r
 
 
 void
-HakiloControlLook::_MakeButtonGradient(BGradientLinear& gradient, BRect& rect,
+HakiCDEControlLook::_MakeButtonGradient(BGradientLinear& gradient, BRect& rect,
 	const rgb_color& base, uint32 flags, orientation orientation) const
 {
 	float topTint = 0.49;
@@ -4077,7 +3271,7 @@ HakiloControlLook::_MakeButtonGradient(BGradientLinear& gradient, BRect& rect,
 
 
 bool
-HakiloControlLook::_RadioButtonAndCheckBoxMarkColor(const rgb_color& base,
+HakiCDEControlLook::_RadioButtonAndCheckBoxMarkColor(const rgb_color& base,
 	rgb_color& color, uint32 flags) const
 {
 	if ((flags & (B_ACTIVATED | B_PARTIALLY_ACTIVATED | B_CLICKED)) == 0) {

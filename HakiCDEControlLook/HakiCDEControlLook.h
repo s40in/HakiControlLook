@@ -1,8 +1,8 @@
 /*
  *
  */
-#ifndef _HAKILO_CONTROL_LOOK_H
-#define _HAKILO_CONTROL_LOOK_H
+#ifndef _HAKI_CDE_CONTROL_LOOK_H
+#define _HAKI_CDE_CONTROL_LOOK_H
 
 
 #include <ControlLook.h>
@@ -17,10 +17,10 @@ class BView;
 namespace BPrivate {
 
 
-class HakiloControlLook : public BControlLook {
+class HakiCDEControlLook : public BControlLook {
 public:
-								HakiloControlLook();
-	virtual						~HakiloControlLook();
+								HakiCDEControlLook();
+	virtual						~HakiCDEControlLook();
 
 	virtual BAlignment			DefaultLabelAlignment() const;
 	virtual float				DefaultLabelSpacing() const;
@@ -317,20 +317,7 @@ public:
 									orientation orientation = B_HORIZONTAL);
 
 protected:
-
 			void				_DrawButtonFrame(BView* view, BRect& rect,
-									const BRect& updateRect,
-									float leftTopRadius,
-									float rightTopRadius,
-									float leftBottomRadius,
-									float rightBottomRadius,
-									const rgb_color& base,
-									const rgb_color& background,
-									float contrast, float brightness = 1.0,
-									uint32 flags = 0,
-									uint32 borders = B_ALL_BORDERS);
-									
-			void				_DrawDanoButtonFrame(BView* view, BRect& rect,
 									const BRect& updateRect,
 									float leftTopRadius,
 									float rightTopRadius,
@@ -375,17 +362,6 @@ protected:
 									uint32 flags = 0,
 									uint32 borders = B_ALL_BORDERS,
 									orientation orientation = B_HORIZONTAL);
-			void				_DrawHakiButtonBackground(BView* view, BRect& rect,
-									const BRect& updateRect,
-									float leftTopRadius,
-									float rightTopRadius,
-									float leftBottomRadius,
-									float rightBottomRadius,
-									const rgb_color& base,
-									bool popupIndicator = false,
-									uint32 flags = 0,
-									uint32 borders = B_ALL_BORDERS,
-									orientation orientation = B_HORIZONTAL);									
 			void				_DrawFlatButtonBackground(BView* view,
 									BRect& rect, const BRect& updateRect,
 									const rgb_color& base,
@@ -393,30 +369,6 @@ protected:
 									uint32 flags = 0,
 									uint32 borders = B_ALL_BORDERS,
 									orientation orientation = B_HORIZONTAL);
-			void				_DrawNonFlatButtonBackground(BView* view,
-									BRect& rect, const BRect& updateRect,
-									BRegion& clipping,
-									float leftTopRadius,
-									float rightTopRadius,
-									float leftBottomRadius,
-									float rightBottomRadius,
-									const rgb_color& base,
-									bool popupIndicator = false,
-									uint32 flags = 0,
-									uint32 borders = B_ALL_BORDERS,
-									orientation orientation = B_HORIZONTAL);
-			void				_DrawDanoButtonBackground(BView* view,
-									BRect& rect, const BRect& updateRect,
-									BRegion& clipping,
-									float leftTopRadius,
-									float rightTopRadius,
-									float leftBottomRadius,
-									float rightBottomRadius,
-									const rgb_color& base,
-									bool popupIndicator = false,
-									uint32 flags = 0,
-									uint32 borders = B_ALL_BORDERS,
-									orientation orientation = B_HORIZONTAL);						
 
 			void				_DrawPopUpMarker(BView* view, const BRect& rect,
 									const rgb_color& base, uint32 flags);
@@ -606,4 +558,4 @@ private:
 
 } // namespace BPrivate
 
-#endif // _HAKILO_CONTROL_LOOK_H
+#endif // _HAKI_CDE_CONTROL_LOOK_H

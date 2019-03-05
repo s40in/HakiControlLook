@@ -13,6 +13,7 @@ Application ExpanderHaki :
 	ExpanderRules.cpp
 	PasswordAlert.cpp
 	HakiloControlLook.cpp
+	HakiCDEControlLook.cpp
 	: be tracker localestub [ TargetLibsupc++ ]
 	: ExpanderHaki.rdef
 ;

@@ -8,13 +8,19 @@
 
 #include "ExpanderWindow.h"
 #include "HakiloControlLook.h"
+#include "HakiCDEControlLook.h"
+
+
+using namespace BPrivate;
 
 
 ExpanderApp::ExpanderApp()
 	:
 	BApplication("application/x-vnd.Haiku-Expander")
 {
-	be_control_look = new HakiloControlLook();
+	//be_control_look = new HakiloControlLook();
+	be_control_look = new HakiCDEControlLook();
+	
 	BPoint windowPosition = fSettings.Message().FindPoint("window_position");
 	BRect windowFrame(0, 0, 450, 120);
 	windowFrame.OffsetBy(windowPosition);
