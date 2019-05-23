@@ -4,6 +4,6 @@ resource app_version {
 	minor = 0,
 	variety = B_APPV_ALPHA,
 	internal = 0,
-	short_info = "HakiloControlLook",
-	long_info  = "Dano0-like Control Look add-on ©2019 s40in"
+	short_info = "HakiloControlLook2",
+	long_info  = "Dano0-like Hakilo Control Look add-on ©2019 s40in"
 };
