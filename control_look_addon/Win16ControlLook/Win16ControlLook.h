@@ -5,8 +5,8 @@
  * Authors:
  *		s40in, Sergei Sorokin
  */
-#ifndef HAKILO_CONTROL_LOOK_H
-#define HAKILO_CONTROL_LOOK_H
+#ifndef WIN16_CONTROL_LOOK_H
+#define WIN16_CONTROL_LOOK_H
 
 
 #include <ControlLook.h>
@@ -22,10 +22,10 @@ class BView;
 using BPrivate::HaikuControlLook;
 
 
-class HakiloControlLook2 : public HaikuControlLook {
+class Win16ControlLook : public HaikuControlLook {
 public:
-								HakiloControlLook2(image_id id);
-	virtual						~HakiloControlLook2();
+								Win16ControlLook(image_id id);
+	virtual						~Win16ControlLook();
 
 
 	//  --- Menus ---
@@ -98,7 +98,8 @@ public:
 									uint32 flags = 0,
 									uint32 borders = B_ALL_BORDERS,
 									orientation orientation = B_HORIZONTAL);	
-									
+		
+		/*							
 	virtual	void				DrawSliderThumb(BView* view, BRect& rect,
 									const BRect& updateRect,
 									const rgb_color& base, uint32 flags,
@@ -112,14 +113,15 @@ public:
 									border_style borderStyle,
 									uint32 flags = 0,
 									uint32 borders = B_ALL_BORDERS);
+		*/
 									
 	protected:
-			void				_DrawHakiloButton(BView* view, BRect& rect,
+			void				_DrawAddonButtonFrame(BView* view, BRect& rect,
 									const BRect& updateRect, float leftTopRadius, float rightTopRadius,
 									float leftBottomRadius, float rightBottomRadius, const rgb_color& base,
 									const rgb_color& background, float contrast, float brightness,
 									uint32 flags, uint32 borders);	
-			void				_DrawHakiloButtonBackground(BView* view, BRect& rect,
+			void				_DrawAddonButtonBackground(BView* view, BRect& rect,
 									const BRect& updateRect,
 									float leftTopRadius,
 									float rightTopRadius,
@@ -129,9 +131,10 @@ public:
 									bool popupIndicator = false,
 									uint32 flags = 0,
 									uint32 borders = B_ALL_BORDERS,
-									orientation orientation = B_HORIZONTAL);					
+									orientation orientation = B_HORIZONTAL);	
+			
 
 };
 
 
-#endif	// HAKILO_CONTROL_LOOK_H
+#endif	// WIN16_CONTROL_LOOK_H

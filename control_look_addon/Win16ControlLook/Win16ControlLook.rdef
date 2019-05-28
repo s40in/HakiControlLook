@@ -1,0 +1,9 @@
+resource app_version {
+	major = 0,
+	middle = 1,
+	minor = 0,
+	variety = B_APPV_ALPHA,
+	internal = 0,
+	short_info = "Win16 Control Look",
+	long_info  = "Windows 3.x Control Look add-on ©2019 s40in"
+};
