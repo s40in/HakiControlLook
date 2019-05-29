@@ -10,7 +10,7 @@
 
 
 
-#include "Win16ControlLook.h"
+#include "AsciiControlLook.h"
 
 #include <algorithm>
 #include <cmath>
@@ -37,19 +37,19 @@
 static const float kButtonPopUpIndicatorWidth = 11;
 
 
-Win16ControlLook::Win16ControlLook(image_id id)
+AsciiControlLook::AsciiControlLook(image_id id)
 	: HaikuControlLook()
 {
 }
 
 
-Win16ControlLook::~Win16ControlLook()
+AsciiControlLook::~AsciiControlLook()
 {
 }
 
 
 void
-Win16ControlLook::DrawMenuBarBackground(BView* view, BRect& rect,
+AsciiControlLook::DrawMenuBarBackground(BView* view, BRect& rect,
 	const BRect& updateRect, const rgb_color& base, uint32 flags,
 	uint32 borders)
 {
@@ -99,7 +99,7 @@ Win16ControlLook::DrawMenuBarBackground(BView* view, BRect& rect,
 
 
 void
-Win16ControlLook::DrawMenuItemBackground(BView* view, BRect& rect,
+AsciiControlLook::DrawMenuItemBackground(BView* view, BRect& rect,
 	const BRect& updateRect, const rgb_color& base, uint32 flags,
 	uint32 borders)
 {
@@ -144,7 +144,7 @@ Win16ControlLook::DrawMenuItemBackground(BView* view, BRect& rect,
 
 // Обычная кнопка
 void
-Win16ControlLook::DrawButtonFrame(BView* view, BRect& rect, const BRect& updateRect,
+AsciiControlLook::DrawButtonFrame(BView* view, BRect& rect, const BRect& updateRect,
 	const rgb_color& base, const rgb_color& background, uint32 flags,
 	uint32 borders)
 {
@@ -165,7 +165,7 @@ Win16ControlLook::DrawButtonFrame(BView* view, BRect& rect, const BRect& updateR
 
 // I dont' know who call this function :)
 void
-Win16ControlLook::DrawButtonFrame(BView* view, BRect& rect, const BRect& updateRect,
+AsciiControlLook::DrawButtonFrame(BView* view, BRect& rect, const BRect& updateRect,
 	float radius, const rgb_color& base, const rgb_color& background, uint32 flags,
 	uint32 borders)
 { 
@@ -176,7 +176,7 @@ Win16ControlLook::DrawButtonFrame(BView* view, BRect& rect, const BRect& updateR
 
 // I dont' know who call this function :)
 void
-Win16ControlLook::DrawButtonFrame(BView* view, BRect& rect,
+AsciiControlLook::DrawButtonFrame(BView* view, BRect& rect,
 	const BRect& updateRect, float leftTopRadius, float rightTopRadius,
 	float leftBottomRadius, float rightBottomRadius, const rgb_color& base,
 	const rgb_color& background, uint32 flags,
@@ -195,7 +195,7 @@ Win16ControlLook::DrawButtonFrame(BView* view, BRect& rect,
 	- Кнопки-заголовки таблиц
 */
 void
-Win16ControlLook::DrawButtonBackground(BView* view, BRect& rect,
+AsciiControlLook::DrawButtonBackground(BView* view, BRect& rect,
 	const BRect& updateRect, const rgb_color& base, uint32 flags,
 	uint32 borders, orientation orientation)
 {
@@ -218,7 +218,7 @@ Win16ControlLook::DrawButtonBackground(BView* view, BRect& rect,
 
 // I dont' know who call this function :)
 void
-Win16ControlLook::DrawButtonBackground(BView* view, BRect& rect,
+AsciiControlLook::DrawButtonBackground(BView* view, BRect& rect,
 	const BRect& updateRect, float radius, const rgb_color& base, uint32 flags,
 	uint32 borders, orientation orientation)
 {
@@ -229,7 +229,7 @@ Win16ControlLook::DrawButtonBackground(BView* view, BRect& rect,
 
 // I dont' know who call this function :)
 void
-Win16ControlLook::DrawButtonBackground(BView* view, BRect& rect,
+AsciiControlLook::DrawButtonBackground(BView* view, BRect& rect,
 	const BRect& updateRect, float leftTopRadius, float rightTopRadius,
 	float leftBottomRadius, float rightBottomRadius, const rgb_color& base,
 	uint32 flags, uint32 borders, orientation orientation)
@@ -242,7 +242,7 @@ Win16ControlLook::DrawButtonBackground(BView* view, BRect& rect,
 /*
 
 void
-Win16ControlLook::DrawSliderThumb(BView* view, BRect& rect, const BRect& updateRect,
+AsciiControlLook::DrawSliderThumb(BView* view, BRect& rect, const BRect& updateRect,
 	const rgb_color& base, uint32 flags, orientation orientation)
 {
 	if (!rect.IsValid() || !rect.Intersects(updateRect))
@@ -329,7 +329,7 @@ Win16ControlLook::DrawSliderThumb(BView* view, BRect& rect, const BRect& updateR
 }
 
 void
-Win16ControlLook::DrawScrollViewFrame(BView* view, BRect& rect,
+AsciiControlLook::DrawScrollViewFrame(BView* view, BRect& rect,
 	const BRect& updateRect, BRect verticalScrollBarFrame,
 	BRect horizontalScrollBarFrame, const rgb_color& base,
 	border_style borderStyle, uint32 flags, uint32 _borders)
@@ -414,95 +414,104 @@ Win16ControlLook::DrawScrollViewFrame(BView* view, BRect& rect,
 */
 
 void
-Win16ControlLook::DrawRadioButton(BView* view, BRect& rect, const BRect& updateRect,
+AsciiControlLook::DrawRadioButton(BView* view, BRect& rect, const BRect& updateRect,
 	const rgb_color& base, uint32 flags)
 {
 	if (!rect.Intersects(updateRect))
 		return;
 	
-	rgb_color blackColor= {0,0,0,255};	
-	rgb_color whiteColor= {255, 255, 255, 255};	
-	rgb_color markColor= {103, 103, 200, 255};
-	rgb_color borderColor;
-	rgb_color backgroundColor;
-	rgb_color navigationColor = ui_color(B_KEYBOARD_NAVIGATION_COLOR);
+	rgb_color rgbButtonColor = { 0, 0, 0, 255};
+	rgb_color  rgbButtonColorInactive = { 192, 192, 192, 255};
+	rgb_color  rgbButtonColorFocus = { 46, 204, 64, 255};
+	
+	view->SetLowColor(base);
+	view->FillRect(rect, B_SOLID_LOW);
+	
 	
 	if ((flags & B_DISABLED) != 0) {
-		backgroundColor = base;
-		borderColor = blackColor;
+		view->SetHighColor(rgbButtonColorInactive);
 	} else if ((flags & B_CLICKED) != 0) {
-		backgroundColor = whiteColor;
-		borderColor = blackColor;
+		view->SetHighColor(rgbButtonColorFocus);
+	} else if ((flags & B_FOCUSED) != 0)  {
+		view->SetHighColor(rgbButtonColorFocus);
 	} else {
-		backgroundColor = whiteColor;
-		borderColor = blackColor;
+		view->SetHighColor(rgbButtonColor);
 	}
 	
-	if ((flags & B_FOCUSED) != 0) {
-		borderColor = navigationColor;
-	}
 		
 	rect.InsetBy(1,1); // make smaller
-		
-	view->SetHighColor(backgroundColor);
-	view->FillEllipse(rect);
 	
-	view->SetHighColor(borderColor);
+	BRect buttonRect;
+	buttonRect = rect;
+	
 	view->StrokeEllipse(rect);
-	rect.InsetBy(4,4);
-
+	rect.InsetBy(1,1);
+	view->StrokeEllipse(rect);
 	
-  if (_RadioButtonAndCheckBoxMarkColor(base, markColor, flags)) {
-  	view->SetHighColor(borderColor);
-  	view->FillEllipse(rect);
- 	}
+	buttonRect.left += 4;
+	buttonRect.right -=4;
+	view->SetHighColor(base);
+	view->FillRect(buttonRect, B_SOLID_HIGH);
+	
+	
+  //if (_RadioButtonAndCheckBoxMarkColor(base, rgbButtonColor, flags)) {
+  if ((flags & (B_ACTIVATED | B_PARTIALLY_ACTIVATED | B_CLICKED)) ) {	
+  	rect.InsetBy(4,4);
+  	view->SetHighColor(rgbButtonColor);
+	view->FillEllipse(rect);
+
+ }
+
 
 }
 
 void
-Win16ControlLook::DrawCheckBox(BView* view, BRect& rect, const BRect& updateRect,
+AsciiControlLook::DrawCheckBox(BView* view, BRect& rect, const BRect& updateRect,
 	const rgb_color& base, uint32 flags)
 {
 	if (!rect.Intersects(updateRect))
 		return;
 		
 	
-	rgb_color blackColor= {0,0,0,255};	
-	rgb_color whiteColor= {255, 255, 255, 255};	
-	rgb_color markColor= {103, 103, 200, 255};
-	rgb_color borderColor;
-	rgb_color backgroundColor;
-	rgb_color navigationColor = ui_color(B_KEYBOARD_NAVIGATION_COLOR);
+	rgb_color rgbButtonColor = { 0, 0, 0, 255};
+	rgb_color  rgbButtonColorInactive = { 192, 192, 192, 255};
+	rgb_color  rgbButtonColorFocus = { 46, 204, 64, 255};
 	
-	if ((flags & B_DISABLED) != 0) {
-		backgroundColor = base;
-		borderColor = blackColor;
-	} else if ((flags & B_CLICKED) != 0) {
-		backgroundColor = whiteColor;
-		borderColor = blackColor;
-	} else {
-		backgroundColor = whiteColor;
-		borderColor = blackColor;
-	}
-	
-	if ((flags & B_FOCUSED) != 0) {
-		borderColor = navigationColor;
-	}
-		
-	rect.InsetBy(1,1); // make smaller
-		
-	view->SetLowColor(backgroundColor);
+	view->SetLowColor(base);
 	view->FillRect(rect, B_SOLID_LOW);
 	
-	view->SetHighColor(borderColor);
+	
+	if ((flags & B_DISABLED) != 0) {
+		view->SetHighColor(rgbButtonColorInactive);
+	} else if ((flags & B_CLICKED) != 0) {
+		view->SetHighColor(rgbButtonColorFocus);
+	} else if ((flags & B_FOCUSED) != 0)  {
+		view->SetHighColor(rgbButtonColorFocus);
+	} else {
+		view->SetHighColor(rgbButtonColor);
+	}
+	
+		
+	rect.InsetBy(1,1); // make smaller
+	
+	BRect buttonRect;
+	buttonRect = rect;
+	
 	view->StrokeRect(rect);
 	rect.InsetBy(1,1);
-
+	view->StrokeRect(rect);
 	
-  if (_RadioButtonAndCheckBoxMarkColor(base, markColor, flags)) {
-  	view->SetHighColor(borderColor);
-  	view->StrokeLine(rect.LeftTop(),rect.RightBottom());
-  	view->StrokeLine(rect.LeftBottom(),rect.RightTop());
+	buttonRect.left += 4;
+	buttonRect.right -=4;
+	view->SetHighColor(base);
+	view->FillRect(buttonRect, B_SOLID_HIGH);
+	
+	
+  //if (_RadioButtonAndCheckBoxMarkColor(base, rgbButtonColor, flags)) {
+  if ((flags & (B_ACTIVATED | B_PARTIALLY_ACTIVATED | B_CLICKED)) ) {	
+  	rect.InsetBy(4,4);
+  	view->SetHighColor(rgbButtonColor);
+	view->FillRect(rect,  B_SOLID_HIGH);
 
  }
 	
@@ -515,7 +524,7 @@ Win16ControlLook::DrawCheckBox(BView* view, BRect& rect, const BRect& updateRect
 
 
 void
-Win16ControlLook::_DrawAddonButtonBackground(BView* view, BRect& rect,
+AsciiControlLook::_DrawAddonButtonBackground(BView* view, BRect& rect,
 	const BRect& updateRect, float leftTopRadius, float rightTopRadius,
 	float leftBottomRadius, float rightBottomRadius, const rgb_color& base,
 	bool popupIndicator, uint32 flags, uint32 borders, orientation orientation)
@@ -539,7 +548,7 @@ Win16ControlLook::_DrawAddonButtonBackground(BView* view, BRect& rect,
 
 
 void
-Win16ControlLook::_DrawAddonButtonFrame(BView* view, BRect& rect,
+AsciiControlLook::_DrawAddonButtonFrame(BView* view, BRect& rect,
 	const BRect& updateRect, float leftTopRadius, float rightTopRadius,
 	float leftBottomRadius, float rightBottomRadius, const rgb_color& base,
 	const rgb_color& background, float contrast, float brightness,
@@ -574,54 +583,86 @@ Win16ControlLook::_DrawAddonButtonFrame(BView* view, BRect& rect,
 	
 
 	
-	rgb_color rgbButtonHighColor = { 255, 255, 255, 255};
-	//rgb_color rgbButtonMidColor = { 192, 199, 207, 255};
-	rgb_color rgbButtonLowColor = { 128, 136, 143, 255};
-	rgb_color rgbButtonLowerColor = { 0, 0, 0, 255};
+	rgb_color rgbButtonColor = { 0, 0, 0, 255};
+	rgb_color  rgbButtonColorInactive = { 192, 192, 192, 255};
+	rgb_color  rgbButtonColorFocus = { 46, 204, 64, 255};
 
 	view->SetLowColor(background);
 	view->FillRect(rect, B_SOLID_LOW);
 	
 	if ((flags & B_DEFAULT_BUTTON) != 0) {
+		view->SetHighColor(rgbButtonColor);
+		view->StrokeRect(rect);
 		rect.InsetBy(3,3); 
 	}
 	
 	
 	
 	if ((flags & B_DISABLED) != 0) {
-		view->SetHighColor(rgbButtonLowColor);
-	} else {
-		view->SetHighColor(rgbButtonLowerColor);
+		view->SetHighColor(rgbButtonColorInactive);
+	} 
+	else if ((flags & B_FOCUSED) != 0) {
+		view->SetHighColor(rgbButtonColorFocus);
+	} 
+	else {
+		view->SetHighColor(rgbButtonColor);
 	}
 
-	view->FillRoundRect(rect, 3.0, 3.0);
-	rect.InsetBy(1,1);
 	
 	if ((flags & B_ACTIVATED) != 0) {
-		_DrawFrame(view, rect, rgbButtonLowColor, rgbButtonLowColor,
-			 rgbButtonHighColor,  rgbButtonHighColor, borders);
-		_DrawFrame(view, rect, rgbButtonLowColor, rgbButtonLowColor,
-			 rgbButtonHighColor,  rgbButtonHighColor, borders);
+		/*view->StrokeRect(rect);
+		rect.top += 2;
+		rect.left += 2;
+		view->StrokeLine(rect.LeftBottom(), rect.LeftTop());
+		view->StrokeLine(rect.LeftTop(), rect.RightTop());
+		rect.InsetBy(1,1);
+		*/
+		_DrawAsciiUpFrame(view, rect, true);
+		
 	}
 	else {
-		_DrawFrame(view, rect, rgbButtonHighColor, rgbButtonHighColor,
-			 	rgbButtonLowColor,  rgbButtonLowColor, borders);
-		_DrawFrame(view, rect, rgbButtonHighColor, rgbButtonHighColor,
-			 	rgbButtonLowColor,  rgbButtonLowColor, borders);
+		_DrawAsciiUpFrame(view, rect, false);
+		/*
+		view->StrokeRect(rect);
+		rect.bottom -= 2;
+		rect.right -= 2;
+		view->StrokeLine(rect.RightBottom(), rect.RightTop());
+		view->StrokeLine(rect.RightBottom(), rect.LeftBottom());
+		rect.InsetBy(1,1);
+		*/
 	}
 	
 	view->PopState();
 }
 
-// #pragma mark - Private methods
+//#pragma mark - Private methods
 
-
+void
+AsciiControlLook::_DrawAsciiUpFrame(BView* view, BRect & rect, bool push)
+{
+	if (push) {
+		view->StrokeRect(rect);
+		rect.top += 2;
+		rect.left += 2;
+		view->StrokeLine(rect.LeftBottom(), rect.LeftTop());
+		view->StrokeLine(rect.LeftTop(), rect.RightTop());
+	}
+	else {
+		view->StrokeRect(rect);
+		rect.bottom -= 2;
+		rect.right -= 2;
+		view->StrokeLine(rect.RightBottom(), rect.RightTop());
+		view->StrokeLine(rect.RightBottom(), rect.LeftBottom());	
+	}
+	rect.InsetBy(1,1);
+	
+}
 
 
 //-----
 
 extern "C" BControlLook* (instantiate_control_look)(image_id id)
 {
-	return new (std::nothrow)Win16ControlLook(id);
+	return new (std::nothrow)AsciiControlLook(id);
 }
 
