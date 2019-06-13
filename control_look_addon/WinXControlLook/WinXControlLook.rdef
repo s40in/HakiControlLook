@@ -1,0 +1,9 @@
+resource app_version {
+	major = 0,
+	middle = 1,
+	minor = 0,
+	variety = B_APPV_ALPHA,
+	internal = 0,
+	short_info = "WinX Control Look",
+	long_info  = "Windows 10 like Control Look add-on ©2019 s40in"
+};
