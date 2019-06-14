@@ -250,7 +250,7 @@ WinXControlLook::DrawButtonBackground(BView* view, BRect& rect,
 		borders, orientation);
 }
 
-/*
+
 
 void
 WinXControlLook::DrawSliderThumb(BView* view, BRect& rect, const BRect& updateRect,
@@ -259,85 +259,25 @@ WinXControlLook::DrawSliderThumb(BView* view, BRect& rect, const BRect& updateRe
 	if (!rect.IsValid() || !rect.Intersects(updateRect))
 		return;
 
-	// figure out frame color
-	rgb_color frameLightColor;
-	rgb_color frameShadowColor;
-	rgb_color shadowColor = (rgb_color){ 0, 0, 0, 60 };
-
+	
+	rgb_color blueColor = { 0, 120, 215, 255};
+	rgb_color grayColor = { 122, 122, 122, 255};
+	
 	if ((flags & B_FOCUSED) != 0) {
-		// focused
-		frameLightColor = ui_color(B_KEYBOARD_NAVIGATION_COLOR);
-		frameShadowColor = frameLightColor;
+		view->SetHighColor(blueColor);
 	} else {
-		// figure out the tints to be used
-		float frameLightTint;
-		float frameShadowTint;
-
-		if ((flags & B_DISABLED) != 0) {
-			frameLightTint = 1.30;
-			frameShadowTint = 1.35;
-			shadowColor.alpha = 30;
-		} else {
-			frameLightTint = 1.6;
-			frameShadowTint = 1.65;
-		}
-
-		frameLightColor = tint_color(base, frameLightTint);
-		frameShadowColor = tint_color(base, frameShadowTint);
+		view->SetHighColor(grayColor);
 	}
-
-	BRect originalRect(rect);
-	rect.right--;
-	rect.bottom--;
-
-	_DrawFrame(view, rect, frameLightColor, frameLightColor,
-		frameShadowColor, frameShadowColor);
-
-	flags &= ~B_ACTIVATED;
-	//DrawButtonBackground(view, rect, updateRect, base, flags); 
-	// Пока чтоб рисовала как Haiku
-	_DrawButtonBackground(view, rect, updateRect, 0.0f, 0.0f, 0.0f, 0.0f,
-		base, false, flags, B_ALL_BORDERS, orientation);
-
-
-	// thumb shadow
-	view->SetDrawingMode(B_OP_ALPHA);
-	view->SetHighColor(shadowColor);
-	originalRect.left++;
-	originalRect.top++;
-	view->StrokeLine(originalRect.LeftBottom(), originalRect.RightBottom());
-	originalRect.bottom--;
-	view->StrokeLine(originalRect.RightTop(), originalRect.RightBottom());
-
-	// thumb edge
-	if (orientation == B_HORIZONTAL) {
-		rect.InsetBy(0, floorf(rect.Height() / 4));
-		rect.left = floorf((rect.left + rect.right) / 2);
-		rect.right = rect.left + 1;
-		shadowColor = tint_color(base, B_DARKEN_2_TINT);
-		shadowColor.alpha = 128;
-		view->SetHighColor(shadowColor);
-		view->StrokeLine(rect.LeftTop(), rect.LeftBottom());
-		rgb_color lightColor = tint_color(base, B_LIGHTEN_2_TINT);
-		lightColor.alpha = 128;
-		view->SetHighColor(lightColor);
-		view->StrokeLine(rect.RightTop(), rect.RightBottom());
-	} else {
-		rect.InsetBy(floorf(rect.Width() / 4), 0);
-		rect.top = floorf((rect.top + rect.bottom) / 2);
-		rect.bottom = rect.top + 1;
-		shadowColor = tint_color(base, B_DARKEN_2_TINT);
-		shadowColor.alpha = 128;
-		view->SetHighColor(shadowColor);
-		view->StrokeLine(rect.LeftTop(), rect.RightTop());
-		rgb_color lightColor = tint_color(base, B_LIGHTEN_2_TINT);
-		lightColor.alpha = 128;
-		view->SetHighColor(lightColor);
-		view->StrokeLine(rect.LeftBottom(), rect.RightBottom());
-	}
-
-	view->SetDrawingMode(B_OP_COPY);
+	
+	view->StrokeRect(rect);
+	rect.InsetBy(1,1);
+	
+	view->SetHighColor(base);
+	view->FillRect(rect);
+			
 }
+
+
 
 void
 WinXControlLook::DrawScrollViewFrame(BView* view, BRect& rect,
@@ -345,6 +285,27 @@ WinXControlLook::DrawScrollViewFrame(BView* view, BRect& rect,
 	BRect horizontalScrollBarFrame, const rgb_color& base,
 	border_style borderStyle, uint32 flags, uint32 _borders)
 {
+	/*
+	rgb_color g1 = { 0, 255, 0, 255};
+	rgb_color r1 = { 255, 0, 0, 255};
+	rgb_color b1 = { 0, 0, 255, 255};
+	
+	view->SetHighColor(g1);
+	view->FillRect(rect, B_SOLID_HIGH);
+	
+	view->SetHighColor(r1);
+	view->FillRect(verticalScrollBarFrame, B_SOLID_HIGH);
+	
+	view->SetHighColor(b1);
+	view->FillRect(horizontalScrollBarFrame, B_SOLID_HIGH);
+	*/
+	
+	
+	rgb_color blueColor = { 0, 120, 215, 255};
+	rgb_color grayColor = { 122, 122, 122, 255};
+	
+
+		
 	// calculate scroll corner rect before messing with the "rect"
 	BRect scrollCornerFillRect(rect.right, rect.bottom,
 		rect.right, rect.bottom);
@@ -362,67 +323,132 @@ WinXControlLook::DrawScrollViewFrame(BView* view, BRect& rect,
 		}
 		return;
 	}
-
-	bool excludeScrollCorner = borderStyle == B_FANCY_BORDER
-		&& horizontalScrollBarFrame.IsValid()
-		&& verticalScrollBarFrame.IsValid();
-
-	uint32 borders = _borders;
-	if (excludeScrollCorner) {
-		rect.bottom = horizontalScrollBarFrame.top;
-		rect.right = verticalScrollBarFrame.left;
-		borders &= ~(B_RIGHT_BORDER | B_BOTTOM_BORDER);
-	}
-
-	rgb_color scrollbarFrameColor = tint_color(base, B_DARKEN_2_TINT);
-
-	if (borderStyle == B_FANCY_BORDER)
-		_DrawOuterResessedFrame(view, rect, base, 1.0, 1.0, flags, borders);
-
+	
+	view->SetHighColor(grayColor);
+	view->StrokeRect(rect);
+	
+	rect.InsetBy(1,1);
+	
 	if ((flags & B_FOCUSED) != 0) {
-		rgb_color focusColor = ui_color(B_KEYBOARD_NAVIGATION_COLOR);
-		_DrawFrame(view, rect, focusColor, focusColor, focusColor, focusColor,
-			borders);
-	} else {
-		_DrawFrame(view, rect, scrollbarFrameColor, scrollbarFrameColor,
-			scrollbarFrameColor, scrollbarFrameColor, borders);
-	}
-
-	if (excludeScrollCorner) {
-		horizontalScrollBarFrame.InsetBy(-1, -1);
-		// do not overdraw the top edge
-		horizontalScrollBarFrame.top += 2;
-		borders = _borders;
-		borders &= ~B_TOP_BORDER;
-		_DrawOuterResessedFrame(view, horizontalScrollBarFrame, base,
-			1.0, 1.0, flags, borders);
-		_DrawFrame(view, horizontalScrollBarFrame, scrollbarFrameColor,
-			scrollbarFrameColor, scrollbarFrameColor, scrollbarFrameColor,
-			borders);
-
-		verticalScrollBarFrame.InsetBy(-1, -1);
-		// do not overdraw the left edge
-		verticalScrollBarFrame.left += 2;
-		borders = _borders;
-		borders &= ~B_LEFT_BORDER;
-		_DrawOuterResessedFrame(view, verticalScrollBarFrame, base,
-			1.0, 1.0, flags, borders);
-		_DrawFrame(view, verticalScrollBarFrame, scrollbarFrameColor,
-			scrollbarFrameColor, scrollbarFrameColor, scrollbarFrameColor,
-			borders);
-
-		// exclude recessed frame
-		scrollCornerFillRect.top++;
-		scrollCornerFillRect.left++;
-	}
-
-	if (scrollCornerFillRect.IsValid()) {
+		view->SetHighColor(blueColor);
+	} 
+	else {
 		view->SetHighColor(base);
-		view->FillRect(scrollCornerFillRect);
 	}
+	view->StrokeRect(rect);
+	
 }
 
-*/
+void
+WinXControlLook::DrawScrollBarBackground(BView* view, BRect& rect1, BRect& rect2,
+	const BRect& updateRect, const rgb_color& base, uint32 flags,
+	orientation orientation)
+{
+	DrawScrollBarBackground(view, rect1, updateRect, base, flags, orientation);
+	DrawScrollBarBackground(view, rect2, updateRect, base, flags, orientation);
+}
+
+void
+WinXControlLook::DrawScrollBarBackground(BView* view, BRect& rect,
+	const BRect& updateRect, const rgb_color& base, uint32 flags,
+	orientation orientation)
+{
+	if (!rect.IsValid() || !rect.Intersects(updateRect))
+		return;
+
+
+	//rgb_color blueColor = { 0, 120, 215, 255};
+	rgb_color grayColor = { 122, 122, 122, 255};
+	
+	
+	//view->SetHighColor(grayColor);
+	if ((flags & B_DISABLED) != 0) {
+		view->SetHighColor(base);
+		view->FillRect(rect);
+	} else {
+		view->SetHighColor(grayColor);
+		view->FillRect(rect);	
+	}
+	
+		
+	/*
+	float gradient1Tint;
+	float gradient2Tint;
+	float darkEdge1Tint;
+	float darkEdge2Tint;
+	float shadowTint;
+
+	if ((flags & B_DISABLED) != 0) {
+		gradient1Tint = 0.9;
+		gradient2Tint = 0.8;
+		darkEdge1Tint = B_DARKEN_2_TINT;
+		darkEdge2Tint = B_DARKEN_2_TINT;
+		shadowTint = gradient1Tint;
+	} else {
+		gradient1Tint = 1.10;
+		gradient2Tint = 1.05;
+		darkEdge1Tint = B_DARKEN_3_TINT;
+		darkEdge2Tint = B_DARKEN_2_TINT;
+		shadowTint = gradient1Tint;
+	}
+
+	rgb_color darkEdge1 = tint_color(base, darkEdge1Tint);
+	rgb_color darkEdge2 = tint_color(base, darkEdge2Tint);
+	rgb_color shadow = tint_color(base, shadowTint);
+
+	if (orientation == B_HORIZONTAL) {
+		// dark vertical line on left edge
+		if (rect.Width() > 0) {
+			view->SetHighColor(darkEdge1);
+			view->StrokeLine(rect.LeftTop(), rect.LeftBottom());
+			rect.left++;
+		}
+		// dark vertical line on right edge
+		if (rect.Width() >= 0) {
+			view->SetHighColor(darkEdge2);
+			view->StrokeLine(rect.RightTop(), rect.RightBottom());
+			rect.right--;
+		}
+		// vertical shadow line after left edge
+		if (rect.Width() >= 0) {
+			view->SetHighColor(shadow);
+			view->StrokeLine(rect.LeftTop(), rect.LeftBottom());
+			rect.left++;
+		}
+		// fill
+		if (rect.Width() >= 0) {
+			_FillGradient(view, rect, base, gradient1Tint, gradient2Tint,
+				orientation);
+		}
+	} else {
+		// dark vertical line on top edge
+		if (rect.Height() > 0) {
+			view->SetHighColor(darkEdge1);
+			view->StrokeLine(rect.LeftTop(), rect.RightTop());
+			rect.top++;
+		}
+		// dark vertical line on bottom edge
+		if (rect.Height() >= 0) {
+			view->SetHighColor(darkEdge2);
+			view->StrokeLine(rect.LeftBottom(), rect.RightBottom());
+			rect.bottom--;
+		}
+		// horizontal shadow line after top edge
+		if (rect.Height() >= 0) {
+			view->SetHighColor(shadow);
+			view->StrokeLine(rect.LeftTop(), rect.RightTop());
+			rect.top++;
+		}
+		// fill
+		if (rect.Height() >= 0) {
+			_FillGradient(view, rect, base, gradient1Tint, gradient2Tint,
+				orientation);
+		}
+	}
+	*/
+}
+
+
 
 void
 WinXControlLook::DrawButtonWithPopUpBackground(BView* view, BRect& rect,
@@ -591,166 +617,7 @@ WinXControlLook::DrawActiveTab(BView* view, BRect& rect, const BRect& updateRect
 	// save the clipping constraints of the view
 	view->PushState();
 
-	/*
-	// set clipping constraints to updateRect
-	BRegion clipping(updateRect);
-	view->ConstrainClippingRegion(&clipping);
 
-	rgb_color edgeShadowColor;
-	rgb_color edgeLightColor;
-	rgb_color frameShadowColor;
-	rgb_color frameLightColor;
-	rgb_color bevelShadowColor;
-	rgb_color bevelLightColor;
-	BGradientLinear fillGradient;
-	fillGradient.SetStart(rect.LeftTop() + BPoint(3, 3));
-	fillGradient.SetEnd(rect.LeftBottom() + BPoint(3, -3));
-
-	if ((flags & B_DISABLED) != 0) {
-		edgeLightColor = base;
-		edgeShadowColor = base;
-		frameLightColor = tint_color(base, 1.25);
-		frameShadowColor = tint_color(base, 1.30);
-		bevelLightColor = tint_color(base, 0.8);
-		bevelShadowColor = tint_color(base, 1.07);
-		fillGradient.AddColor(tint_color(base, 0.85), 0);
-		fillGradient.AddColor(base, 255);
-	} else {
-		edgeLightColor = tint_color(base, 0.80);
-		edgeShadowColor = tint_color(base, 1.03);
-		frameLightColor = tint_color(base, 1.30);
-		frameShadowColor = tint_color(base, 1.30);
-		bevelLightColor = tint_color(base, 0.6);
-		bevelShadowColor = tint_color(base, 1.07);
-		fillGradient.AddColor(tint_color(base, 0.75), 0);
-		fillGradient.AddColor(tint_color(base, 1.03), 255);
-	}
-
-	static const float kRoundCornerRadius = 4.0f;
-
-	// left top corner dimensions
-	BRect leftTopCorner(rect);
-	leftTopCorner.right = floorf(leftTopCorner.left + kRoundCornerRadius);
-	leftTopCorner.bottom = floorf(rect.top + kRoundCornerRadius);
-
-	// right top corner dimensions
-	BRect rightTopCorner(rect);
-	rightTopCorner.left = floorf(rightTopCorner.right - kRoundCornerRadius);
-	rightTopCorner.bottom = floorf(rect.top + kRoundCornerRadius);
-
-	// left bottom corner dimensions
-	BRect leftBottomCorner(rect);
-	leftBottomCorner.right = floorf(leftBottomCorner.left + kRoundCornerRadius);
-	leftBottomCorner.top = floorf(rect.bottom - kRoundCornerRadius);
-
-	// right bottom corner dimensions
-	BRect rightBottomCorner(rect);
-	rightBottomCorner.left = floorf(rightBottomCorner.right
-		- kRoundCornerRadius);
-	rightBottomCorner.top = floorf(rect.bottom - kRoundCornerRadius);
-
-	switch (side) {
-		case B_TOP_BORDER:
-			clipping.Exclude(leftTopCorner);
-			clipping.Exclude(rightTopCorner);
-
-			// draw the left top corner
-			_DrawRoundCornerLeftTop(view, leftTopCorner, updateRect, base,
-				edgeShadowColor, frameLightColor, bevelLightColor,
-				fillGradient);
-			// draw the right top corner
-			_DrawRoundCornerRightTop(view, rightTopCorner, updateRect, base,
-				edgeShadowColor, edgeLightColor, frameLightColor,
-				frameShadowColor, bevelLightColor, bevelShadowColor,
-				fillGradient);
-			break;
-		case B_BOTTOM_BORDER:
-			clipping.Exclude(leftBottomCorner);
-			clipping.Exclude(rightBottomCorner);
-
-			// draw the left bottom corner
-			_DrawRoundCornerLeftBottom(view, leftBottomCorner, updateRect, base,
-				edgeShadowColor, edgeLightColor, frameLightColor,
-				frameShadowColor, bevelLightColor, bevelShadowColor,
-				fillGradient);
-			// draw the right bottom corner
-			_DrawRoundCornerRightBottom(view, rightBottomCorner, updateRect,
-				base, edgeLightColor, frameShadowColor, bevelShadowColor,
-				fillGradient);
-			break;
-		case B_LEFT_BORDER:
-			clipping.Exclude(leftTopCorner);
-			clipping.Exclude(leftBottomCorner);
-
-			// draw the left top corner
-			_DrawRoundCornerLeftTop(view, leftTopCorner, updateRect, base,
-				edgeShadowColor, frameLightColor, bevelLightColor,
-				fillGradient);
-			// draw the left bottom corner
-			_DrawRoundCornerLeftBottom(view, leftBottomCorner, updateRect, base,
-				edgeShadowColor, edgeLightColor, frameLightColor,
-				frameShadowColor, bevelLightColor, bevelShadowColor,
-				fillGradient);
-			break;
-		case B_RIGHT_BORDER:
-			clipping.Exclude(rightTopCorner);
-			clipping.Exclude(rightBottomCorner);
-
-			// draw the right top corner
-			_DrawRoundCornerRightTop(view, rightTopCorner, updateRect, base,
-				edgeShadowColor, edgeLightColor, frameLightColor,
-				frameShadowColor, bevelLightColor, bevelShadowColor,
-				fillGradient);
-			// draw the right bottom corner
-			_DrawRoundCornerRightBottom(view, rightBottomCorner, updateRect,
-				base, edgeLightColor, frameShadowColor, bevelShadowColor,
-				fillGradient);
-			break;
-	}
-
-	// clip out the corners
-	view->ConstrainClippingRegion(&clipping);
-
-	uint32 bordersToDraw = 0;
-	switch (side) {
-		case B_TOP_BORDER:
-			bordersToDraw = (B_LEFT_BORDER | B_TOP_BORDER | B_RIGHT_BORDER);
-			break;
-		case B_BOTTOM_BORDER:
-			bordersToDraw = (B_LEFT_BORDER | B_BOTTOM_BORDER | B_RIGHT_BORDER);
-			break;
-		case B_LEFT_BORDER:
-			bordersToDraw = (B_LEFT_BORDER | B_BOTTOM_BORDER | B_TOP_BORDER);
-			break;
-		case B_RIGHT_BORDER:
-			bordersToDraw = (B_RIGHT_BORDER | B_BOTTOM_BORDER | B_TOP_BORDER);
-			break;
-	}
-
-	// draw the rest of frame and fill
-	_DrawFrame(view, rect, edgeShadowColor, edgeShadowColor, edgeLightColor,
-		edgeLightColor, borders);
-	if (side == B_TOP_BORDER || side == B_BOTTOM_BORDER) {
-		if ((borders & B_LEFT_BORDER) == 0)
-			rect.left++;
-		if ((borders & B_RIGHT_BORDER) == 0)
-			rect.right--;
-	} else if (side == B_LEFT_BORDER || side == B_RIGHT_BORDER) {
-		if ((borders & B_TOP_BORDER) == 0)
-			rect.top++;
-		if ((borders & B_BOTTOM_BORDER) == 0)
-			rect.bottom--;
-	}
-
-	_DrawFrame(view, rect, frameLightColor, frameLightColor, frameShadowColor,
-		frameShadowColor, bordersToDraw);
-
-	_DrawFrame(view, rect, bevelLightColor, bevelLightColor, bevelShadowColor,
-		bevelShadowColor);
-
-	view->FillRect(rect, fillGradient);
-	*/
-	
 	rgb_color grayColor = { 122, 122, 122, 255};
 	//rgb_color blueColor = { 0, 120, 215, 255};
 	
@@ -783,7 +650,6 @@ WinXControlLook::DrawActiveTab(BView* view, BRect& rect, const BRect& updateRect
 	}
 	
 	_DrawFrame(view, rect, grayColor, grayColor, grayColor, grayColor, bordersToDraw);
-	//_DrawFrame(view, rect, blueColor, blueColor, blueColor, blueColor, bordersToDraw);
 		
 	view->SetLowColor(base);
 	view->FillRect(rect,B_SOLID_LOW);
@@ -801,104 +667,8 @@ WinXControlLook::DrawInactiveTab(BView* view, BRect& rect, const BRect& updateRe
 		return;
 		
 	view->PushState();
-
-	/*
-	rgb_color edgeShadowColor;
-	rgb_color edgeLightColor;
-	rgb_color frameShadowColor;
-	rgb_color frameLightColor;
-	rgb_color bevelShadowColor;
-	rgb_color bevelLightColor;
-	BGradientLinear fillGradient;
-	fillGradient.SetStart(rect.LeftTop() + BPoint(3, 3));
-	fillGradient.SetEnd(rect.LeftBottom() + BPoint(3, -3));
-
-	if ((flags & B_DISABLED) != 0) {
-		edgeLightColor = base;
-		edgeShadowColor = base;
-		frameLightColor = tint_color(base, 1.25);
-		frameShadowColor = tint_color(base, 1.30);
-		bevelLightColor = tint_color(base, 0.8);
-		bevelShadowColor = tint_color(base, 1.07);
-		fillGradient.AddColor(tint_color(base, 0.85), 0);
-		fillGradient.AddColor(base, 255);
-	} else {
-		edgeLightColor = tint_color(base, 0.80);
-		edgeShadowColor = tint_color(base, 1.03);
-		frameLightColor = tint_color(base, 1.30);
-		frameShadowColor = tint_color(base, 1.30);
-		bevelLightColor = tint_color(base, 1.10);
-		bevelShadowColor = tint_color(base, 1.17);
-		fillGradient.AddColor(tint_color(base, 1.12), 0);
-		fillGradient.AddColor(tint_color(base, 1.08), 255);
-	}
-	*/
-
-
-
-	/*
-	BRect background = rect;
-	switch (side) {
-		case B_TOP_BORDER:
-			rect.top += 4;
-			background.bottom = rect.top;
-			break;
-		case B_BOTTOM_BORDER:
-			rect.bottom -= 4;
-			background.top = rect.bottom;
-			break;
-		case B_LEFT_BORDER:
-			rect.left += 4;
-			background.right = rect.left;
-			break;
-		case B_RIGHT_BORDER:
-			rect.right -= 4;
-			background.left = rect.right;
-		break;
-	}
-
-	// active tabs stand out at the top, but this is an inactive tab
-	view->SetHighColor(base);
-	view->FillRect(background);
-
-	
-	// frame and fill
-	_DrawFrame(view, rect, edgeShadowColor, edgeShadowColor, edgeLightColor,
-		edgeLightColor, borders);
-
-	_DrawFrame(view, rect, frameLightColor, frameLightColor, frameShadowColor,
-		frameShadowColor, borders);
-		*/
-
-
-	/*
-	if (rect.IsValid()) {
-		if (side == B_TOP_BORDER || side == B_BOTTOM_BORDER) {
-			_DrawFrame(view, rect, bevelShadowColor, bevelShadowColor,
-				bevelLightColor, bevelLightColor, B_LEFT_BORDER & ~borders);
-		} else if (side == B_LEFT_BORDER || side == B_RIGHT_BORDER) {
-			_DrawFrame(view, rect, bevelShadowColor, bevelShadowColor,
-				bevelLightColor, bevelLightColor, B_TOP_BORDER & ~borders);
-		}
-	} else {
-		if (side == B_TOP_BORDER || side == B_BOTTOM_BORDER) {
-			if ((B_LEFT_BORDER & ~borders) != 0)
-				rect.left++;
-		} else if (side == B_LEFT_BORDER || side == B_RIGHT_BORDER) {
-			if ((B_TOP_BORDER & ~borders) != 0)
-				rect.top++;
-		}
-	}
-	*/
-	//view->SetHighColor(grayColor);
-	//view->StrokeRect(rect);
-	//rect.InsetBy(1,1);
-	//view->FillRect(rect, fillGradient);
-	
+		
 	rgb_color grayColor = { 122, 122, 122, 255};
-	//rgb_color blueColor = { 0, 120, 215, 255};
-	
-	//_DrawFrame(view, rect, grayColor, grayColor, grayColor, grayColor, borders);	
 	
 	view->SetLowColor(base);
 	view->FillRect(rect,B_SOLID_LOW);
@@ -926,6 +696,152 @@ WinXControlLook::DrawInactiveTab(BView* view, BRect& rect, const BRect& updateRe
 	view->PopState();
 }
 
+
+void
+WinXControlLook::DrawTextControlBorder(BView* view, BRect& rect,
+	const BRect& updateRect, const rgb_color& base, uint32 flags,
+	uint32 borders)
+{
+	if (!rect.Intersects(updateRect))
+		return;
+
+	//rgb_color dark1BorderColor;
+	//rgb_color dark2BorderColor;
+	///rgb_color navigationColor = ui_color(B_KEYBOARD_NAVIGATION_COLOR);
+	//rgb_color invalidColor = ui_color(B_FAILURE_COLOR);
+	rgb_color grayColor = { 122, 122, 122, 255};
+	rgb_color blueColor = { 0, 120, 215, 255};
+	rgb_color whiteColor = { 255, 255, 255, 255};
+	
+
+	if ((flags & B_DISABLED) != 0) {
+		_DrawFrame(view, rect, grayColor, grayColor, grayColor, grayColor, borders);
+	} else if ((flags & B_CLICKED) != 0) {
+		_DrawFrame(view, rect, blueColor, blueColor, blueColor, blueColor, borders);
+		_DrawFrame(view, rect, blueColor, blueColor, blueColor, blueColor, borders);
+	} else {
+		
+		_DrawFrame(view, rect, grayColor, grayColor, grayColor, grayColor, borders);
+		_DrawFrame(view, rect, whiteColor, whiteColor, whiteColor, whiteColor, borders);
+	}
+	
+}
+
+// #pragma mark -
+
+void
+WinXControlLook::DrawBorder(BView* view, BRect& rect, const BRect& updateRect,
+	const rgb_color& base, border_style borderStyle, uint32 flags,
+	uint32 borders)
+{
+	if (borderStyle == B_NO_BORDER)
+		return;
+
+	rgb_color grayColor = { 122, 122, 122, 255};
+	rgb_color blueColor = { 0, 120, 215, 255};
+	
+	rgb_color scrollbarFrameColor = grayColor;
+	if ((flags & B_FOCUSED) != 0)
+		scrollbarFrameColor = blueColor;
+
+	if (borderStyle == B_FANCY_BORDER)
+		_DrawFrame(view, rect, blueColor, blueColor, blueColor, blueColor, borders);
+
+	_DrawFrame(view, rect, scrollbarFrameColor, scrollbarFrameColor,
+		scrollbarFrameColor, scrollbarFrameColor, borders);
+}
+
+void
+WinXControlLook::DrawRaisedBorder(BView* view, BRect& rect,
+	const BRect& updateRect, const rgb_color& base, uint32 flags,
+	uint32 borders)
+{
+	rgb_color lightColor;
+	rgb_color shadowColor;
+	rgb_color grayColor = { 122, 122, 122, 255};
+
+
+	if ((flags & B_DISABLED) != 0) {
+		lightColor = base;
+		shadowColor = base;
+	} else {
+		lightColor = grayColor;
+		shadowColor = grayColor;
+	}
+
+	_DrawFrame(view, rect, lightColor, lightColor, shadowColor, shadowColor,
+		borders);
+}
+
+void
+WinXControlLook::GetFrameInsets(frame_type frameType, uint32 flags, float& _left,
+	float& _top, float& _right, float& _bottom)
+{
+	// All frames have the same inset on each side.
+	float inset = 0;
+
+	switch (frameType) {
+		case B_BUTTON_FRAME:
+			inset = (flags & B_DEFAULT_BUTTON) != 0 ? 5 : 2;
+			break;
+		case B_GROUP_FRAME:
+		case B_MENU_FIELD_FRAME:
+			inset = 3;
+			break;
+		case B_SCROLL_VIEW_FRAME:
+		case B_TEXT_CONTROL_FRAME:
+			inset = 1;
+			break;
+	}
+
+	_left = inset;
+	_top = inset;
+	_right = inset;
+	_bottom = inset;
+}
+
+
+void
+WinXControlLook::GetBackgroundInsets(background_type backgroundType,
+	uint32 flags, float& _left, float& _top, float& _right, float& _bottom)
+{
+	// Most backgrounds have the same inset on each side.
+	float inset = 0;
+
+	switch (backgroundType) {
+		case B_BUTTON_BACKGROUND:
+		case B_MENU_BACKGROUND:
+		case B_MENU_BAR_BACKGROUND:
+		case B_MENU_FIELD_BACKGROUND:
+		case B_MENU_ITEM_BACKGROUND:
+			inset = 1;
+			break;
+		case B_BUTTON_WITH_POP_UP_BACKGROUND:
+			_left = 1;
+			_top = 1;
+			_right = 1 + kButtonPopUpIndicatorWidth;
+			_bottom = 1;
+			return;
+		case B_HORIZONTAL_SCROLL_BAR_BACKGROUND:
+			_left = 2;
+			_top = 0;
+			_right = 1;
+			_bottom = 0;
+			return;
+		case B_VERTICAL_SCROLL_BAR_BACKGROUND:
+			_left = 0;
+			_top = 2;
+			_right = 0;
+			_bottom = 1;
+			return;
+	}
+
+	_left = inset;
+	_top = inset;
+	_right = inset;
+	_bottom = inset;
+}
+
 // #pragma mark -
 
 
@@ -939,9 +855,7 @@ WinXControlLook::_DrawAddonButtonBackground(BView* view, BRect& rect,
 		return;
 
 	rgb_color rgbButtonActivatedBackground = { 229, 241, 251, 255};
-	//rgb_color rgbButtonInactiveBackground = { 173, 173, 173, 255};
-	
-	// save the clipping constraints of the view
+
 	view->PushState();
 
 	// set clipping constraints to updateRect

@@ -146,7 +146,7 @@ public:
 									uint32 borders = B_ALL_BORDERS,
 									orientation orientation = B_HORIZONTAL);	
 		
-		/*							
+								
 	virtual	void				DrawSliderThumb(BView* view, BRect& rect,
 									const BRect& updateRect,
 									const rgb_color& base, uint32 flags,
@@ -160,7 +160,18 @@ public:
 									border_style borderStyle,
 									uint32 flags = 0,
 									uint32 borders = B_ALL_BORDERS);
-		*/
+									
+	virtual	void				DrawScrollBarBackground(BView* view,
+									BRect& rect1, BRect& rect2,
+									const BRect& updateRect,
+									const rgb_color& base, uint32 flags,
+									orientation orientation);
+									
+	virtual	void				DrawScrollBarBackground(BView* view,
+									BRect& rect, const BRect& updateRect,
+									const rgb_color& base, uint32 flags,
+									orientation orientation);
+		
 	virtual	void				DrawButtonWithPopUpBackground(BView* view,
 									BRect& rect, const BRect& updateRect,
 									const rgb_color& base,
@@ -185,10 +196,7 @@ public:
 									uint32 borders = B_ALL_BORDERS,
 									orientation orientation = B_HORIZONTAL);
 									
-	virtual	void				DrawGroupFrame(BView* view, BRect& rect,
-									const BRect& updateRect,
-									const rgb_color& base,
-									uint32 borders = B_ALL_BORDERS);
+
 	
 	virtual	void				DrawActiveTab(BView* view, BRect& rect,
 									const BRect& updateRect,
@@ -201,6 +209,35 @@ public:
 									const rgb_color& base, uint32 flags = 0,
 									uint32 borders = B_ALL_BORDERS,
 									uint32 side = B_TOP_BORDER);
+	
+	virtual	void				DrawTextControlBorder(BView* view, BRect& rect,
+									const BRect& updateRect,
+									const rgb_color& base, uint32 flags = 0,
+									uint32 borders = B_ALL_BORDERS);
+	// various borders						
+	virtual	void				DrawBorder(BView* view, BRect& rect,
+									const BRect& updateRect,
+									const rgb_color& base,
+									border_style borderStyle, uint32 flags = 0,
+									uint32 borders = B_ALL_BORDERS);
+									
+	virtual	void				DrawGroupFrame(BView* view, BRect& rect,
+									const BRect& updateRect,
+									const rgb_color& base,
+									uint32 borders = B_ALL_BORDERS);
+									
+	virtual	void				DrawRaisedBorder(BView* view, BRect& rect,
+									const BRect& updateRect,
+									const rgb_color& base, uint32 flags = 0,
+									uint32 borders = B_ALL_BORDERS);
+									
+	virtual	void				GetFrameInsets(frame_type frameType,
+									uint32 flags, float& _left, float& _top,
+									float& _right, float& _bottom);
+	virtual	void				GetBackgroundInsets(
+									background_type backgroundType,
+									uint32 flags, float& _left, float& _top,
+									float& _right, float& _bottom);
 									
 									
 	protected:
